@@ -1,0 +1,2 @@
+url,expected_status,max_response_seconds,xpath
+http://37.27.17.198:8084/cs/,200,6,//h2[contains(text(),"Oblíbené produkty")]
