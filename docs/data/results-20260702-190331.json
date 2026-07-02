@@ -1,0 +1,29 @@
+[
+  {
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-07-02T19:03:29.066608+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.835,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-07-02T19:03:29.903288+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.727,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-07-02T19:03:30.631102+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.76,
+    "xpath_found": true,
+    "errors": []
+  }
+]
