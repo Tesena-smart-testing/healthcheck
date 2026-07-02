@@ -1,0 +1,11 @@
+[
+  {
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-07-02T13:34:13.202108+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.658,
+    "xpath_found": true,
+    "errors": []
+  }
+]
