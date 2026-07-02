@@ -1,0 +1,33 @@
+[
+  {
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-07-02T18:51:19.648964+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.7,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-07-02T18:51:20.350051+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.546,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //h1[contains(text(),\"Build your own professional resume\")]"
+    ]
+  },
+  {
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-07-02T18:51:20.897176+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.545,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //h1[contains(text(),\"Design Better Tests,\")]"
+    ]
+  }
+]
