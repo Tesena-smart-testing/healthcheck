@@ -1,4 +1,4 @@
 url;expected_status;max_response_seconds;xpath
 http://37.27.17.198:8084/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
-https://cv.tesena.com/;200;4;//h1[contains(text(),"Build your own professional resume")]
-https://testdesign.tesena.com/;200;4;//h1[contains(text(),"Design Better Tests,")]
+https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")]
+https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
