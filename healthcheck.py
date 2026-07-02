@@ -361,7 +361,7 @@ def main() -> int:
     results: list[dict] = []
 
     with open(SERVICES_CSV, newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
+        reader = csv.DictReader(csvfile, delimiter=";")
         for row in reader:
             url = row.get("url", "").strip()
             if not url:
