@@ -45,6 +45,45 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
 
+      - name: Generate summary output
+        if: always()
+        continue-on-error: true
+        run: |
+          import json
+          import glob
+          import os
+          from pathlib import Path
+          from datetime import datetime, timezone
+          
+          # Find the latest results file
+          data_dir = Path("docs/data")
+          result_files = sorted(data_dir.glob("results-*.json"), reverse=True)
+          
+          if not result_files:
+              print("::error::No results found")
+              exit(1)
+          
+          with open(result_files[0], 'r', encoding='utf-8') as f:
+              results = json.load(f)
+          
+          ok_count = sum(1 for r in results if r.get('status') == 'ok')
+          error_count = sum(1 for r in results if r.get('status') != 'ok')
+          
+          summary_text = "📋 **Healthcheck Summary**\n\n"
+          summary_text += f"✅ Operational: **{ok_count}**\n"
+          summary_text += f"❌ Issues: **{error_count}**\n\n"
+          summary_text += "**Services:**\n"
+          
+          for r in sorted(results, key=lambda x: x['url']):
+              icon = "✅" if r.get('status') == 'ok' else "❌"
+              url = r.get('url', 'N/A')
+              summary_text += f"{icon} {url}\n"
+          
+          # Write to GitHub step summary
+          with open(Path(os.environ.get('GITHUB_STEP_SUMMARY', '/dev/null')), 'a') as f:
+              f.write(summary_text)
+        shell: python
+
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"

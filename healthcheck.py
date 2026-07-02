@@ -26,6 +26,7 @@ REPO_ROOT = Path(__file__).parent
 SERVICES_CSV = REPO_ROOT / "services.csv"
 DATA_DIR = REPO_ROOT / "docs" / "data"
 INDEX_HTML = REPO_ROOT / "docs" / "index.html"
+SUMMARY_HTML = REPO_ROOT / "docs" / "summary.html"
 RETENTION_DAYS = 14
 
 # ---------------------------------------------------------------------------
@@ -349,6 +350,209 @@ def generate_html_report(all_results: list[dict]) -> None:
     print(f"✔  HTML report written to {INDEX_HTML}")
 
 
+def generate_summary_html(results: list[dict]) -> None:
+    """Generate a concise summary page (docs/summary.html) with current check status."""
+    
+    # Group results by URL
+    latest_by_url: dict[str, dict] = {}
+    for r in results:
+        if r["url"] not in latest_by_url:
+            latest_by_url[r["url"]] = r
+    
+    # Count statuses
+    ok_count = sum(1 for r in latest_by_url.values() if r["status"] == "ok")
+    error_count = sum(1 for r in latest_by_url.values() if r["status"] != "ok")
+    total_count = len(latest_by_url)
+    
+    # Overall status
+    overall_status = "ok" if error_count == 0 else "error"
+    status_emoji = "✅" if overall_status == "ok" else "❌"
+    status_text = "All services operational" if overall_status == "ok" else f"{error_count} service(s) with issues"
+    
+    # Build service list HTML
+    services_html = ""
+    for url in sorted(latest_by_url.keys()):
+        r = latest_by_url[url]
+        icon = _STATUS_ICON.get(r["status"], "❓")
+        http_status = r.get("http_status") or "N/A"
+        response_time = r.get("response_time_s") or "N/A"
+        errors = "; ".join(r.get("errors", [])) or "—"
+        
+        services_html += f"""  <tr class="{_STATUS_CLASS.get(r['status'], 'error')}">
+    <td>{icon}</td>
+    <td><code>{url}</code></td>
+    <td>{http_status}</td>
+    <td>{response_time}</td>
+    <td>{errors}</td>
+  </tr>
+"""
+    
+    check_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="refresh" content="300"/>
+<title>Healthcheck Summary</title>
+<style>
+  body {{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #222;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }}
+  .container {{
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    padding: 40px;
+  }}
+  .header {{
+    text-align: center;
+    margin-bottom: 32px;
+  }}
+  .status-badge {{
+    font-size: 3em;
+    margin-bottom: 16px;
+  }}
+  h1 {{
+    color: #1a73e8;
+    margin: 0 0 8px;
+    font-size: 2em;
+  }}
+  .status-text {{
+    color: #555;
+    font-size: 1.1em;
+    margin: 8px 0 0 0;
+  }}
+  .stats {{
+    display: flex;
+    justify-content: space-around;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+  }}
+  .stat {{
+    flex: 1;
+  }}
+  .stat-value {{
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #1a73e8;
+  }}
+  .stat-label {{
+    font-size: 0.9em;
+    color: #999;
+    margin-top: 4px;
+  }}
+  table {{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+  }}
+  thead {{
+    background: #e8eaf6;
+    border-bottom: 2px solid #1a73e8;
+  }}
+  th {{
+    padding: 12px;
+    text-align: left;
+    font-size: 0.9em;
+    font-weight: 600;
+  }}
+  td {{
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+  }}
+  tr.ok {{
+    background: #f0f9ff;
+  }}
+  tr.error {{
+    background: #fff5f5;
+  }}
+  code {{
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }}
+  .footer {{
+    text-align: center;
+    color: #999;
+    font-size: 0.85em;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+  }}
+  a {{
+    color: #1a73e8;
+    text-decoration: none;
+  }}
+  a:hover {{
+    text-decoration: underline;
+  }}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="status-badge">{status_emoji}</div>
+    <h1>Healthcheck Summary</h1>
+    <p class="status-text">{status_text}</p>
+  </div>
+  
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" style="color: #34a853;">{ok_count}</div>
+      <div class="stat-label">Operational</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" style="color: #ea4335;">{error_count}</div>
+      <div class="stat-label">Issues</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">{total_count}</div>
+      <div class="stat-label">Total</div>
+    </div>
+  </div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Service</th>
+        <th>HTTP Status</th>
+        <th>Response Time (s)</th>
+        <th>Errors</th>
+      </tr>
+    </thead>
+    <tbody>
+{services_html}    </tbody>
+  </table>
+  
+  <div class="footer">
+    <p>Last check: {check_time}</p>
+    <p><a href="index.html">→ View detailed report</a></p>
+  </div>
+</div>
+</body>
+</html>"""
+    
+    SUMMARY_HTML.parent.mkdir(parents=True, exist_ok=True)
+    with open(SUMMARY_HTML, "w", encoding="utf-8") as fh:
+        fh.write(html)
+    print(f"✔  Summary page written to {SUMMARY_HTML}")
+
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -390,6 +594,7 @@ def main() -> int:
 
     all_results = load_all_results()
     generate_html_report(all_results)
+    generate_summary_html(results)
 
     # Notify on failures
     failed = [r for r in results if r["status"] != "ok"]
