@@ -15,6 +15,9 @@ concurrency:
   group: healthcheck
   cancel-in-progress: false
 
+env:
+  PAGES_BRANCH: gh-pages
+
 jobs:
   check:
     name: Run healthchecks
@@ -22,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -86,14 +89,27 @@ jobs:
 
       - name: Commit and push results
         run: |
+          cp -a docs /tmp/docs-output
+          git fetch origin ${PAGES_BRANCH} || true
+
+          if git show-ref --verify --quiet refs/remotes/origin/${PAGES_BRANCH}; then
+            git checkout -B ${PAGES_BRANCH} origin/${PAGES_BRANCH}
+          else
+            git checkout --orphan ${PAGES_BRANCH}
+            git rm -rf . || true
+          fi
+
+          rm -rf docs
+          cp -a /tmp/docs-output docs
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
           git diff --staged --quiet || git commit -m "chore: update healthcheck results $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+          git push origin ${PAGES_BRANCH}
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs/
 
@@ -108,4 +124,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
