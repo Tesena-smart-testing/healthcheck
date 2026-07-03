@@ -88,7 +88,15 @@ jobs:
               f.write(summary_text)
         shell: python
 
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/
+
       - name: Commit and push results
+        if: always()
+        continue-on-error: true
         run: |
           cp -a docs /tmp/docs-output
           git fetch origin ${PAGES_BRANCH} || true
@@ -110,11 +118,6 @@ jobs:
           git add docs/
           git diff --staged --quiet || git commit -m "chore: update healthcheck results $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push origin ${PAGES_BRANCH}
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: docs/
 
   deploy:
     name: Deploy to GitHub Pages
