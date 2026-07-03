@@ -1,5 +1,5 @@
 name;url;expected_status;max_response_seconds;xpath
-Intranet;http://37.27.17.198:8084/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
+Fake Presta Shop;http://37.27.17.198:8084/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
 CV Portal;https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")]
-Test Design;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
+Test Design Helper;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
 QE Compass;https://qecompass.tesena.com/;200;4;//title[contains(text(),"Tesena QE Compass")]

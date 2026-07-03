@@ -277,7 +277,7 @@ def generate_html_report(all_results: list[dict]) -> None:
 <div class="card {card_class}">
   <h2>{icon} {latest.get('name', latest['url'])}</h2>
   <p class="latest-info">
-    <small>{latest['url']}</small><br/>
+    <small><a href="{latest['url']}" target="_blank" rel="noopener noreferrer">{latest['url']}</a></small><br/>
     Last check: {_fmt_ts(latest['timestamp'])} &nbsp;|&nbsp;
     HTTP: {latest.get('http_status') or 'N/A'} &nbsp;|&nbsp;
     Response time: {latest.get('response_time_s') if latest.get('response_time_s') is not None else 'N/A'} s
@@ -326,8 +326,8 @@ def generate_html_report(all_results: list[dict]) -> None:
     margin-bottom: 8px;
   }}
   .title-logo {{
-    width: 36px;
-    height: 36px;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
   }}
   .title-text {{
@@ -359,9 +359,9 @@ def generate_html_report(all_results: list[dict]) -> None:
 <body>
 <div class="title">
   <img src="{LOGO_URL}" alt="Tesena logo" class="title-logo"/>
-  <h1 class="title-text">🔍 Application Healthcheck Dashboard</h1>
+  <h1 class="title-text">Application Healthcheck Dashboard</h1>
 </div>
-<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; Checks run every hour</p>
+<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a></p>
 {cards_html}
 </body>
 </html>"""
@@ -456,8 +456,8 @@ def generate_summary_html(results: list[dict]) -> None:
     gap: 10px;
   }}
   .title-logo {{
-    width: 40px;
-    height: 40px;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
   }}
   .status-text {{
