@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Intranet",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-07-03T10:09:56.307543+00:00",
+    "status": "error",
+    "http_status": 500,
+    "response_time_s": 0.465,
+    "xpath_found": null,
+    "errors": [
+      "HTTP status 500 (expected 200)",
+      "XPath evaluation error: Document is empty"
+    ]
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-07-03T10:09:56.773009+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.002,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-07-03T10:09:57.775504+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.702,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-07-03T10:09:58.478552+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.676,
+    "xpath_found": true,
+    "errors": []
+  }
+]

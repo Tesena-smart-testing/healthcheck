@@ -35,6 +35,17 @@
     margin: 0 0 8px;
     font-size: 2em;
   }
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .title-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
   .status-text {
     color: #555;
     font-size: 1.1em;
@@ -114,13 +125,16 @@
 <div class="container">
   <div class="header">
     <div class="status-badge">❌</div>
-    <h1>Healthcheck Summary</h1>
+    <div class="title">
+      <img src="https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png" alt="Tesena logo" class="title-logo"/>
+      <h1>Healthcheck Summary</h1>
+    </div>
     <p class="status-text">1 service(s) with issues</p>
   </div>
   
   <div class="stats">
     <div class="stat">
-      <div class="stat-value" style="color: #34a853;">2</div>
+      <div class="stat-value" style="color: #34a853;">3</div>
       <div class="stat-label">Operational</div>
     </div>
     <div class="stat">
@@ -128,7 +142,7 @@
       <div class="stat-label">Issues</div>
     </div>
     <div class="stat">
-      <div class="stat-value">3</div>
+      <div class="stat-value">4</div>
       <div class="stat-label">Total</div>
     </div>
   </div>
@@ -146,30 +160,37 @@
     <tbody>
   <tr class="error">
     <td>❌</td>
-    <td><code>http://37.27.17.198:8084/cs/</code></td>
+    <td><strong>Intranet</strong><br/><small style="color:#999;">http://37.27.17.198:8084/cs/</small></td>
     <td>500</td>
-    <td>0.344</td>
+    <td>0.465</td>
     <td>HTTP status 500 (expected 200); XPath evaluation error: Document is empty</td>
   </tr>
   <tr class="ok">
     <td>✅</td>
-    <td><code>https://cv.tesena.com/</code></td>
+    <td><strong>CV Portal</strong><br/><small style="color:#999;">https://cv.tesena.com/</small></td>
     <td>200</td>
-    <td>0.535</td>
+    <td>1.002</td>
     <td>—</td>
   </tr>
   <tr class="ok">
     <td>✅</td>
-    <td><code>https://testdesign.tesena.com/</code></td>
+    <td><strong>QE Compass</strong><br/><small style="color:#999;">https://qecompass.tesena.com/</small></td>
     <td>200</td>
-    <td>0.541</td>
+    <td>0.676</td>
+    <td>—</td>
+  </tr>
+  <tr class="ok">
+    <td>✅</td>
+    <td><strong>Test Design</strong><br/><small style="color:#999;">https://testdesign.tesena.com/</small></td>
+    <td>200</td>
+    <td>0.702</td>
     <td>—</td>
   </tr>
     </tbody>
   </table>
   
   <div class="footer">
-    <p>Last check: 2026-07-03 09:51 UTC</p>
+    <p>Last check: 2026-07-03 10:09 UTC</p>
     <p><a href="index.html">→ View detailed report</a></p>
   </div>
 </div>
