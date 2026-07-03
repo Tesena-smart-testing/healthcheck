@@ -113,18 +113,18 @@
 <body>
 <div class="container">
   <div class="header">
-    <div class="status-badge">✅</div>
+    <div class="status-badge">❌</div>
     <h1>Healthcheck Summary</h1>
-    <p class="status-text">All services operational</p>
+    <p class="status-text">1 service(s) with issues</p>
   </div>
   
   <div class="stats">
     <div class="stat">
-      <div class="stat-value" style="color: #34a853;">3</div>
+      <div class="stat-value" style="color: #34a853;">2</div>
       <div class="stat-label">Operational</div>
     </div>
     <div class="stat">
-      <div class="stat-value" style="color: #ea4335;">0</div>
+      <div class="stat-value" style="color: #ea4335;">1</div>
       <div class="stat-label">Issues</div>
     </div>
     <div class="stat">
@@ -144,32 +144,32 @@
       </tr>
     </thead>
     <tbody>
-  <tr class="ok">
-    <td>✅</td>
+  <tr class="error">
+    <td>❌</td>
     <td><code>http://37.27.17.198:8084/cs/</code></td>
-    <td>200</td>
-    <td>0.815</td>
-    <td>—</td>
+    <td>500</td>
+    <td>0.344</td>
+    <td>HTTP status 500 (expected 200); XPath evaluation error: Document is empty</td>
   </tr>
   <tr class="ok">
     <td>✅</td>
     <td><code>https://cv.tesena.com/</code></td>
     <td>200</td>
-    <td>0.951</td>
+    <td>0.535</td>
     <td>—</td>
   </tr>
   <tr class="ok">
     <td>✅</td>
     <td><code>https://testdesign.tesena.com/</code></td>
     <td>200</td>
-    <td>0.722</td>
+    <td>0.541</td>
     <td>—</td>
   </tr>
     </tbody>
   </table>
   
   <div class="footer">
-    <p>Last check: 2026-07-03 06:23 UTC</p>
+    <p>Last check: 2026-07-03 09:51 UTC</p>
     <p><a href="index.html">→ View detailed report</a></p>
   </div>
 </div>
