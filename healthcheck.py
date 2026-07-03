@@ -28,14 +28,16 @@ DATA_DIR = REPO_ROOT / "docs" / "data"
 INDEX_HTML = REPO_ROOT / "docs" / "index.html"
 SUMMARY_HTML = REPO_ROOT / "docs" / "summary.html"
 RETENTION_DAYS = 14
+LOGO_URL = "https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png"
 
 # ---------------------------------------------------------------------------
 # Health check
 # ---------------------------------------------------------------------------
 
-def check_service(url: str, expected_status: int, max_response_seconds: float, xpath: str) -> dict:
+def check_service(name: str, url: str, expected_status: int, max_response_seconds: float, xpath: str) -> dict:
     """Run a single health-check and return a result dict."""
     result = {
+        "name": name,
         "url": url,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "ok",
@@ -273,8 +275,9 @@ def generate_html_report(all_results: list[dict]) -> None:
 
         cards_html += f"""
 <div class="card {card_class}">
-  <h2>{icon} {url}</h2>
+  <h2>{icon} {latest.get('name', latest['url'])}</h2>
   <p class="latest-info">
+    <small>{latest['url']}</small><br/>
     Last check: {_fmt_ts(latest['timestamp'])} &nbsp;|&nbsp;
     HTTP: {latest.get('http_status') or 'N/A'} &nbsp;|&nbsp;
     Response time: {latest.get('response_time_s') if latest.get('response_time_s') is not None else 'N/A'} s
@@ -315,6 +318,22 @@ def generate_html_report(all_results: list[dict]) -> None:
     padding: 20px;
   }}
   h1 {{ text-align: center; color: #1a73e8; }}
+  .title {{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }}
+  .title-logo {{
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+  }}
+  .title-text {{
+    margin: 0;
+    color: #1a73e8;
+  }}
   .generated {{ text-align: center; color: #777; margin-bottom: 24px; font-size: 0.9em; }}
   .card {{
     background: #fff;
@@ -338,7 +357,10 @@ def generate_html_report(all_results: list[dict]) -> None:
 </style>
 </head>
 <body>
-<h1>🔍 Application Healthcheck Dashboard</h1>
+<div class="title">
+  <img src="{LOGO_URL}" alt="Tesena logo" class="title-logo"/>
+  <h1 class="title-text">🔍 Application Healthcheck Dashboard</h1>
+</div>
 <p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; Checks run every hour</p>
 {cards_html}
 </body>
@@ -377,10 +399,11 @@ def generate_summary_html(results: list[dict]) -> None:
         http_status = r.get("http_status") or "N/A"
         response_time = r.get("response_time_s") or "N/A"
         errors = "; ".join(r.get("errors", [])) or "—"
+        name = r.get("name", url)
         
         services_html += f"""  <tr class="{_STATUS_CLASS.get(r['status'], 'error')}">
     <td>{icon}</td>
-    <td><code>{url}</code></td>
+    <td><strong>{name}</strong><br/><small style="color:#999;">{url}</small></td>
     <td>{http_status}</td>
     <td>{response_time}</td>
     <td>{errors}</td>
@@ -425,6 +448,17 @@ def generate_summary_html(results: list[dict]) -> None:
     color: #1a73e8;
     margin: 0 0 8px;
     font-size: 2em;
+  }}
+  .title {{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }}
+  .title-logo {{
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
   }}
   .status-text {{
     color: #555;
@@ -505,7 +539,10 @@ def generate_summary_html(results: list[dict]) -> None:
 <div class="container">
   <div class="header">
     <div class="status-badge">{status_emoji}</div>
-    <h1>Healthcheck Summary</h1>
+    <div class="title">
+      <img src="{LOGO_URL}" alt="Tesena logo" class="title-logo"/>
+      <h1>Healthcheck Summary</h1>
+    </div>
     <p class="status-text">{status_text}</p>
   </div>
   
@@ -567,6 +604,7 @@ def main() -> int:
     with open(SERVICES_CSV, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile, delimiter=";")
         for row in reader:
+            name = row.get("name", "").strip()
             url = row.get("url", "").strip()
             if not url:
                 continue
@@ -580,8 +618,8 @@ def main() -> int:
                 max_response_seconds = 6.0
             xpath = row.get("xpath", "").strip()
 
-            print(f"Checking {url} …", end=" ", flush=True)
-            result = check_service(url, expected_status, max_response_seconds, xpath)
+            print(f"Checking {name or url} …", end=" ", flush=True)
+            result = check_service(name, url, expected_status, max_response_seconds, xpath)
             results.append(result)
             print(result["status"].upper(), result.get("errors") or "")
 

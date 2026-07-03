@@ -14,6 +14,22 @@
     padding: 20px;
   }
   h1 { text-align: center; color: #1a73e8; }
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .title-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+  }
+  .title-text {
+    margin: 0;
+    color: #1a73e8;
+  }
   .generated { text-align: center; color: #777; margin-bottom: 24px; font-size: 0.9em; }
   .card {
     background: #fff;
@@ -37,15 +53,19 @@
 </style>
 </head>
 <body>
-<h1>🔍 Application Healthcheck Dashboard</h1>
-<p class="generated">Generated: 2026-07-02 17:31 UTC &nbsp;|&nbsp; Data retention: 14 days &nbsp;|&nbsp; Checks run every hour</p>
+<div class="title">
+  <img src="https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png" alt="Tesena logo" class="title-logo"/>
+  <h1 class="title-text">🔍 Application Healthcheck Dashboard</h1>
+</div>
+<p class="generated">Generated: 2026-07-03 10:08 UTC &nbsp;|&nbsp; Data retention: 14 days &nbsp;|&nbsp; Checks run every hour</p>
 
-<div class="card ok">
-  <h2>✅ http://37.27.17.198:8084/cs/</h2>
+<div class="card error">
+  <h2>❌ Intranet</h2>
   <p class="latest-info">
-    Last check: 2026-07-02 17:31 UTC &nbsp;|&nbsp;
-    HTTP: 200 &nbsp;|&nbsp;
-    Response time: 0.729 s
+    <small>http://37.27.17.198:8084/cs/</small><br/>
+    Last check: 2026-07-03 10:08 UTC &nbsp;|&nbsp;
+    HTTP: 500 &nbsp;|&nbsp;
+    Response time: 0.23 s
   </p>
   <details>
     <summary>History (last 14 days)</summary>
@@ -57,6 +77,9 @@
         </tr>
       </thead>
       <tbody>
+<tr class="error"><td>2026-07-03 10:08 UTC</td><td>❌</td><td>500</td><td>0.23</td><td>—</td><td>HTTP status 500 (expected 200); XPath evaluation error: Document is empty</td></tr>
+<tr class="error"><td>2026-07-03 10:05 UTC</td><td>❌</td><td>500</td><td>0.311</td><td>—</td><td>HTTP status 500 (expected 200); XPath evaluation error: Document is empty</td></tr>
+<tr class="error"><td>2026-07-03 09:44 UTC</td><td>❌</td><td>500</td><td>0.283</td><td>—</td><td>HTTP status 500 (expected 200); XPath evaluation error: Document is empty</td></tr>
 <tr class="ok"><td>2026-07-02 17:31 UTC</td><td>✅</td><td>200</td><td>0.729</td><td>✅</td><td>—</td></tr>
 <tr class="ok"><td>2026-07-02 15:07 UTC</td><td>✅</td><td>200</td><td>0.825</td><td>✅</td><td>—</td></tr>
 <tr class="ok"><td>2026-07-02 13:39 UTC</td><td>✅</td><td>200</td><td>0.667</td><td>✅</td><td>—</td></tr>
@@ -64,6 +87,87 @@
 <tr class="ok"><td>2026-07-02 12:10 UTC</td><td>✅</td><td>200</td><td>0.825</td><td>✅</td><td>—</td></tr>
 <tr class="error"><td>2026-07-02 09:52 UTC</td><td>❌</td><td>N/A</td><td>N/A</td><td>—</td><td>Request timed out after 11.0s</td></tr>
 <tr class="error"><td>2026-07-02 09:51 UTC</td><td>❌</td><td>N/A</td><td>N/A</td><td>—</td><td>Request timed out after 11.0s</td></tr>
+
+      </tbody>
+    </table>
+  </details>
+</div>
+
+<div class="card ok">
+  <h2>✅ CV Portal</h2>
+  <p class="latest-info">
+    <small>https://cv.tesena.com/</small><br/>
+    Last check: 2026-07-03 10:08 UTC &nbsp;|&nbsp;
+    HTTP: 200 &nbsp;|&nbsp;
+    Response time: 0.517 s
+  </p>
+  <details>
+    <summary>History (last 14 days)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th><th>Status</th><th>HTTP</th>
+          <th>Response (s)</th><th>XPath</th><th>Errors</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr class="ok"><td>2026-07-03 10:08 UTC</td><td>✅</td><td>200</td><td>0.517</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 10:05 UTC</td><td>✅</td><td>200</td><td>0.537</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 09:44 UTC</td><td>✅</td><td>200</td><td>0.529</td><td>✅</td><td>—</td></tr>
+
+      </tbody>
+    </table>
+  </details>
+</div>
+
+<div class="card ok">
+  <h2>✅ Test Design</h2>
+  <p class="latest-info">
+    <small>https://testdesign.tesena.com/</small><br/>
+    Last check: 2026-07-03 10:08 UTC &nbsp;|&nbsp;
+    HTTP: 200 &nbsp;|&nbsp;
+    Response time: 0.488 s
+  </p>
+  <details>
+    <summary>History (last 14 days)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th><th>Status</th><th>HTTP</th>
+          <th>Response (s)</th><th>XPath</th><th>Errors</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr class="ok"><td>2026-07-03 10:08 UTC</td><td>✅</td><td>200</td><td>0.488</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 10:05 UTC</td><td>✅</td><td>200</td><td>0.492</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 09:44 UTC</td><td>✅</td><td>200</td><td>0.535</td><td>✅</td><td>—</td></tr>
+
+      </tbody>
+    </table>
+  </details>
+</div>
+
+<div class="card ok">
+  <h2>✅ QE Compass</h2>
+  <p class="latest-info">
+    <small>https://qecompass.tesena.com/</small><br/>
+    Last check: 2026-07-03 10:08 UTC &nbsp;|&nbsp;
+    HTTP: 200 &nbsp;|&nbsp;
+    Response time: 0.513 s
+  </p>
+  <details>
+    <summary>History (last 14 days)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th><th>Status</th><th>HTTP</th>
+          <th>Response (s)</th><th>XPath</th><th>Errors</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr class="ok"><td>2026-07-03 10:08 UTC</td><td>✅</td><td>200</td><td>0.513</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 10:05 UTC</td><td>✅</td><td>200</td><td>0.466</td><td>✅</td><td>—</td></tr>
+<tr class="ok"><td>2026-07-03 09:44 UTC</td><td>✅</td><td>200</td><td>0.525</td><td>✅</td><td>—</td></tr>
 
       </tbody>
     </table>
