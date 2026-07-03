@@ -24,11 +24,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout source code
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Checkout gh-pages for history
         uses: actions/checkout@v7
         with:
           ref: ${{ env.PAGES_BRANCH }}
-          fetch-depth: 0
+          path: gh-pages-data
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,6 +44,13 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Copy previous results into place
+        run: |
+          mkdir -p docs/data
+          if [ -d gh-pages-data/docs/data ]; then
+            cp gh-pages-data/docs/data/* docs/data/ 2>/dev/null || true
+          fi
 
       - name: Run healthcheck
         id: run_check
