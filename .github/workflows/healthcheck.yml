@@ -5,6 +5,12 @@ on:
     # Run every hour
     - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Send a test notification to the configured mailbox / MS Teams channel'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -58,10 +64,12 @@ jobs:
         continue-on-error: true
         env:
           TEAMS_EMAIL: ${{ secrets.TEAMS_EMAIL }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          HEALTHCHECK_TEST_MODE: ${{ inputs.test_mode }}
 
       - name: Generate summary output
         if: always()

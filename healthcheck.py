@@ -30,6 +30,12 @@ SUMMARY_HTML = REPO_ROOT / "docs" / "summary.html"
 RETENTION_DAYS = 14
 LOGO_URL = "https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png"
 
+
+def is_truthy(value: str | None) -> bool:
+    """Return True for common truthy environment variable values."""
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 # ---------------------------------------------------------------------------
 # Health check
 # ---------------------------------------------------------------------------
@@ -97,8 +103,50 @@ def check_service(name: str, url: str, expected_status: int, max_response_second
 # Notifications
 # ---------------------------------------------------------------------------
 
-def send_email_notification(results: list[dict]) -> None:
-    """Send an e-mail alert (to a MS Teams channel address) for failed checks."""
+def send_teams_webhook_notification(results: list[dict], test_mode: bool = False) -> None:
+  """Send notification to MS Teams channel using an incoming webhook URL."""
+  webhook_url = os.environ.get("TEAMS_WEBHOOK_URL", "").strip()
+  if not webhook_url:
+    print("⚠  TEAMS_WEBHOOK_URL not set – skipping Teams webhook notification.")
+    return
+
+  failed = [r for r in results if r["status"] != "ok"]
+  if not failed and not test_mode:
+    return
+
+  timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+  listed_results = results if test_mode else failed
+  mode_label = "TEST" if test_mode else "ALERT"
+
+  lines = [
+    f"**[Healthcheck {mode_label}]**",
+    f"Time: {timestamp}",
+    "",
+  ]
+
+  for r in listed_results:
+    errors = "; ".join(r.get("errors", [])) or ("Test run - current status OK" if test_mode else "—")
+    lines.append(
+      f"- {r.get('name', r['url'])} | status: {r.get('status', 'N/A')} | HTTP: {r.get('http_status', 'N/A')} | response: {r.get('response_time_s', 'N/A')}s"
+    )
+    lines.append(f"  - URL: {r['url']}")
+    lines.append(f"  - Errors: {errors}")
+
+  if not test_mode:
+    lines.append("")
+    lines.append("Please investigate immediately.")
+
+  payload = {"text": "\n".join(lines)}
+
+  try:
+    response = requests.post(webhook_url, json=payload, timeout=10)
+    response.raise_for_status()
+    print("✉  Teams webhook notification sent")
+  except requests.RequestException as exc:
+    print(f"✗  Failed to send Teams webhook notification: {exc}", file=sys.stderr)
+
+def send_email_notification(results: list[dict], test_mode: bool = False) -> None:
+    """Send an e-mail alert (to a MS Teams channel address) for failed checks or test runs."""
     teams_email = os.environ.get("TEAMS_EMAIL", "").strip()
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com").strip()
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
@@ -113,39 +161,65 @@ def send_email_notification(results: list[dict]) -> None:
         return
 
     failed = [r for r in results if r["status"] != "ok"]
-    if not failed:
+    if not failed and not test_mode:
         return
 
-    subject = f"[Healthcheck] {len(failed)} service(s) FAILED"
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+
+    if test_mode:
+        subject = f"[Healthcheck TEST] SMTP notification test ({len(results)} service(s) checked)"
+        intro_html = (
+            f"<p>This is a <strong>test notification</strong> sent at {timestamp}. "
+            f"It verifies that SMTP delivery to the configured mailbox or MS Teams channel works.</p>"
+        )
+        intro_text = (
+            f"This is a TEST notification sent at {timestamp}. "
+            f"It verifies that SMTP delivery to the configured mailbox or MS Teams channel works.\n\n"
+        )
+        closing_html = "<p>No action is required unless delivery or login failed.</p>"
+        closing_text = "No action is required unless delivery or login failed."
+        listed_results = results
+    else:
+        subject = f"[Healthcheck] {len(failed)} service(s) FAILED"
+        intro_html = f"<p>The following services failed their health check at {timestamp}:</p>"
+        intro_text = f"The following services failed their health check at {timestamp}:\n\n"
+        closing_html = "<p>Please investigate immediately.</p>"
+        closing_text = "Please investigate immediately."
+        listed_results = failed
 
     rows_html = ""
     rows_text = ""
-    for r in failed:
-        error_str = "; ".join(r["errors"])
+    for r in listed_results:
+        error_str = "; ".join(r.get("errors", [])) or ("Test run - current status OK" if test_mode else "—")
         rows_html += (
             f"<tr>"
+            f"<td>{r.get('name', r['url'])}</td>"
             f"<td>{r['url']}</td>"
             f"<td>{r.get('http_status', 'N/A')}</td>"
             f"<td>{r.get('response_time_s', 'N/A')}</td>"
+            f"<td>{r.get('status', 'N/A')}</td>"
             f"<td>{error_str}</td>"
             f"</tr>\n"
         )
-        rows_text += f"  • {r['url']}\n    Errors: {error_str}\n"
+        rows_text += (
+            f"  • {r.get('name', r['url'])}\n"
+            f"    URL: {r['url']}\n"
+            f"    HTTP: {r.get('http_status', 'N/A')}\n"
+            f"    Response time: {r.get('response_time_s', 'N/A')}\n"
+            f"    Status: {r.get('status', 'N/A')}\n"
+            f"    Errors: {error_str}\n"
+        )
 
     html_body = f"""<html><body>
-<p>The following services failed their health check at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}:</p>
+{intro_html}
 <table border="1" cellpadding="4" cellspacing="0">
-<tr><th>URL</th><th>HTTP Status</th><th>Response Time (s)</th><th>Errors</th></tr>
+<tr><th>Service</th><th>URL</th><th>HTTP Status</th><th>Response Time (s)</th><th>Status</th><th>Errors</th></tr>
 {rows_html}
 </table>
-<p>Please investigate immediately.</p>
+{closing_html}
 </body></html>"""
 
-    text_body = (
-        f"The following services failed their health check at "
-        f"{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}:\n\n"
-        f"{rows_text}\nPlease investigate immediately."
-    )
+    text_body = intro_text + rows_text + "\n" + closing_text
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -160,7 +234,8 @@ def send_email_notification(results: list[dict]) -> None:
             server.starttls()
             server.login(smtp_user, smtp_password)
             server.send_message(msg)
-        print(f"✉  Notification e-mail sent to {teams_email}")
+        mode = "test" if test_mode else "alert"
+        print(f"✉  Notification e-mail sent to {teams_email} ({mode})")
     except Exception as exc:
         print(f"✗  Failed to send notification e-mail: {exc}", file=sys.stderr)
 
@@ -599,6 +674,19 @@ def main() -> int:
         print(f"✗  services.csv not found at {SERVICES_CSV}", file=sys.stderr)
         return 1
 
+    test_mode = is_truthy(os.environ.get("HEALTHCHECK_TEST_MODE"))
+    has_webhook_notification = bool(os.environ.get("TEAMS_WEBHOOK_URL", "").strip())
+    has_email_notification = bool(
+      os.environ.get("TEAMS_EMAIL", "").strip()
+      and os.environ.get("SMTP_USER", "").strip()
+      and os.environ.get("SMTP_PASSWORD", "").strip()
+    )
+
+    if test_mode:
+        print("ℹ  HEALTHCHECK_TEST_MODE enabled - a test notification will be sent after checks complete.")
+    if not has_webhook_notification and not has_email_notification:
+      print("⚠  No notification channel configured (set TEAMS_WEBHOOK_URL or SMTP + TEAMS_EMAIL).")
+
     results: list[dict] = []
 
     with open(SERVICES_CSV, newline="", encoding="utf-8") as csvfile:
@@ -634,12 +722,26 @@ def main() -> int:
     generate_html_report(all_results)
     generate_summary_html(results)
 
-    # Notify on failures
     failed = [r for r in results if r["status"] != "ok"]
+
+    if test_mode:
+        if has_webhook_notification:
+            send_teams_webhook_notification(results, test_mode=True)
+        if has_email_notification:
+            send_email_notification(results, test_mode=True)
+
     if failed:
-        send_email_notification(results)
+        if not test_mode:
+            if has_webhook_notification:
+                send_teams_webhook_notification(results)
+            if has_email_notification:
+                send_email_notification(results)
         print(f"⚠  {len(failed)} service(s) reported errors.")
         return 1
+
+    if test_mode:
+        print("✅ All services are healthy. Test notification sent.")
+        return 0
 
     print("✅ All services are healthy.")
     return 0
