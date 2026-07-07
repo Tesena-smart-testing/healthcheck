@@ -104,46 +104,84 @@ def check_service(name: str, url: str, expected_status: int, max_response_second
 # ---------------------------------------------------------------------------
 
 def send_teams_webhook_notification(results: list[dict], test_mode: bool = False) -> None:
-  """Send notification to MS Teams channel using an incoming webhook URL."""
-  webhook_url = os.environ.get("TEAMS_WEBHOOK_URL", "").strip()
-  if not webhook_url:
-    print("⚠  TEAMS_WEBHOOK_URL not set – skipping Teams webhook notification.")
-    return
+    """Send notification to MS Teams channel using an Adaptive Card via Power Automate webhook."""
+    webhook_url = os.environ.get("TEAMS_WEBHOOK_URL", "").strip()
+    if not webhook_url:
+        print("⚠  TEAMS_WEBHOOK_URL not set – skipping Teams webhook notification.")
+        return
 
-  failed = [r for r in results if r["status"] != "ok"]
-  if not failed and not test_mode:
-    return
+    failed = [r for r in results if r["status"] != "ok"]
+    if not failed and not test_mode:
+        return
 
-  timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
-  listed_results = results if test_mode else failed
-  mode_label = "TEST" if test_mode else "ALERT"
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    listed_results = results if test_mode else failed
+    mode_label = "TEST" if test_mode else "ALERT"
+    color = "0078D4" if test_mode else "E81828"  # blue for test, red for alert
 
-  lines = [
-    f"**[Healthcheck {mode_label}]**",
-    f"Time: {timestamp}",
-    "",
-  ]
+    # Build service items for the card
+    service_facts = []
+    for r in listed_results:
+        errors = "; ".join(r.get("errors", [])) or ("Current status OK" if test_mode else "—")
+        service_facts.append({
+            "name": r.get('name', r['url']),
+            "value": f"**Status:** {r.get('status', 'N/A')} | **HTTP:** {r.get('http_status', 'N/A')} | **Time:** {r.get('response_time_s', 'N/A')}s"
+        })
+        service_facts.append({
+            "name": "URL",
+            "value": r['url']
+        })
+        service_facts.append({
+            "name": "Errors" if not test_mode else "Details",
+            "value": errors
+        })
 
-  for r in listed_results:
-    errors = "; ".join(r.get("errors", [])) or ("Test run - current status OK" if test_mode else "—")
-    lines.append(
-      f"- {r.get('name', r['url'])} | status: {r.get('status', 'N/A')} | HTTP: {r.get('http_status', 'N/A')} | response: {r.get('response_time_s', 'N/A')}s"
-    )
-    lines.append(f"  - URL: {r['url']}")
-    lines.append(f"  - Errors: {errors}")
+    # Build Adaptive Card payload
+    card_body = [
+        {
+            "type": "TextBlock",
+            "text": f"[Healthcheck {mode_label}]",
+            "weight": "bolder",
+            "size": "large",
+            "color": color
+        },
+        {
+            "type": "TextBlock",
+            "text": f"Time: {timestamp}",
+            "spacing": "small",
+            "isSubtle": True
+        }
+    ]
 
-  if not test_mode:
-    lines.append("")
-    lines.append("Please investigate immediately.")
+    # Add fact set
+    if service_facts:
+        card_body.append({
+            "type": "FactSet",
+            "facts": service_facts,
+            "spacing": "medium"
+        })
 
-  payload = {"text": "\n".join(lines)}
+    if not test_mode:
+        card_body.append({
+            "type": "TextBlock",
+            "text": "Please investigate immediately.",
+            "spacing": "medium",
+            "weight": "bolder"
+        })
 
-  try:
-    response = requests.post(webhook_url, json=payload, timeout=10)
-    response.raise_for_status()
-    print("✉  Teams webhook notification sent")
-  except requests.RequestException as exc:
-    print(f"✗  Failed to send Teams webhook notification: {exc}", file=sys.stderr)
+    payload = {
+        "type": "AdaptiveCard",
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "version": "1.4",
+        "body": card_body
+    }
+
+    try:
+        response = requests.post(webhook_url, json=payload, timeout=10)
+        response.raise_for_status()
+        print("✉  Teams webhook notification sent")
+    except requests.RequestException as exc:
+        print(f"✗  Failed to send Teams webhook notification: {exc}", file=sys.stderr)
 
 def send_email_notification(results: list[dict], test_mode: bool = False) -> None:
     """Send an e-mail alert (to a MS Teams channel address) for failed checks or test runs."""
