@@ -15,6 +15,7 @@ from datetime import datetime, timedelta, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 from lxml import html as lxml_html
@@ -29,6 +30,12 @@ INDEX_HTML = REPO_ROOT / "docs" / "index.html"
 SUMMARY_HTML = REPO_ROOT / "docs" / "summary.html"
 RETENTION_DAYS = 14
 LOGO_URL = "https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png"
+PRAGUE_TZ = ZoneInfo("Europe/Prague")
+
+
+def _fmt_display(dt: datetime) -> str:
+    """Format a datetime for display in Prague local time (CET/CEST)."""
+    return dt.astimezone(PRAGUE_TZ).strftime("%Y-%m-%d %H:%M %Z")
 
 
 def is_truthy(value: str | None) -> bool:
@@ -117,7 +124,7 @@ def send_teams_webhook_notification(results: list[dict], test_mode: bool = False
     if not failed and not test_mode:
         return
 
-    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    timestamp = _fmt_display(datetime.now(timezone.utc))
     listed_results = results if test_mode else failed
 
     if test_mode:
@@ -227,7 +234,7 @@ def send_email_notification(results: list[dict], test_mode: bool = False) -> Non
     if not failed and not test_mode:
         return
 
-    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
+    timestamp = _fmt_display(datetime.now(timezone.utc))
 
     if test_mode:
         subject = f"[Healthcheck TEST] SMTP notification test ({len(results)} service(s) checked)"
@@ -367,7 +374,7 @@ _STATUS_CLASS = {"ok": "ok", "error": "error"}
 def _fmt_ts(ts: str) -> str:
     try:
         dt = datetime.fromisoformat(ts)
-        return dt.strftime("%Y-%m-%d %H:%M UTC")
+        return _fmt_display(dt)
     except ValueError:
         return ts
 
@@ -384,7 +391,7 @@ def generate_html_report(all_results: list[dict]) -> None:
     for url in services:
         services[url].sort(key=lambda x: x["timestamp"], reverse=True)
 
-    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    generated_at = _fmt_display(datetime.now(timezone.utc))
 
     # --- build per-service cards ---
     cards_html = ""
@@ -548,7 +555,7 @@ def generate_summary_html(results: list[dict]) -> None:
   </tr>
 """
     
-    check_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    check_time = _fmt_display(datetime.now(timezone.utc))
     
     html = f"""<!DOCTYPE html>
 <html lang="en">
