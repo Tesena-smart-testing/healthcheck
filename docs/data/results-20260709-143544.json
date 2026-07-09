@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-07-09T14:35:41.078830+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.174,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-07-09T14:35:42.253479+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.927,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-07-09T14:35:43.181831+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.711,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-07-09T14:35:43.893802+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.718,
+    "xpath_found": true,
+    "errors": []
+  }
+]
