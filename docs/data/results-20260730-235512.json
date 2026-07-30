@@ -2,40 +2,40 @@
   {
     "name": "Fake Presta Shop",
     "url": "http://37.27.17.198:8084/cs/",
-    "timestamp": "2026-07-16T23:53:37.795188+00:00",
+    "timestamp": "2026-07-30T23:55:09.217757+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.191,
+    "response_time_s": 1.061,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "CV Portal",
     "url": "https://cv.tesena.com/",
-    "timestamp": "2026-07-16T23:53:38.988014+00:00",
+    "timestamp": "2026-07-30T23:55:10.279889+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 0.722,
+    "response_time_s": 1.11,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Test Design Helper",
     "url": "https://testdesign.tesena.com/",
-    "timestamp": "2026-07-16T23:53:39.710549+00:00",
+    "timestamp": "2026-07-30T23:55:11.390846+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 0.941,
+    "response_time_s": 0.841,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "QE Compass",
     "url": "https://qecompass.tesena.com/",
-    "timestamp": "2026-07-16T23:53:40.653230+00:00",
+    "timestamp": "2026-07-30T23:55:12.232634+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 0.722,
+    "response_time_s": 0.637,
     "xpath_found": true,
     "errors": []
   }
