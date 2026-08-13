@@ -125,6 +125,17 @@ File: `.github/workflows/healthcheck.yml`
 - Results are committed to the `gh-pages` branch (only `docs/` folder).
 - Data older than **14 days** is automatically deleted (`RETENTION_DAYS = 14` in `healthcheck.py`).
 - The `deploy` job has an automatic **retry** if GitHub Pages deployment fails transiently.
+- Workflow uses `concurrency` with `cancel-in-progress: true` to prevent long queue backlogs when an older run gets stuck.
+- The `deploy` job runs only when `check` succeeds (`if: needs.check.result == 'success'`) to avoid pending Pages deployments after failed/cancelled checks.
+
+### Queue protection note
+
+If a historical run is stuck in `Waiting` (for example on `Deploy to GitHub Pages`), new scheduled runs may stop progressing. The current workflow settings are tuned to recover quickly:
+
+1. Newer runs cancel older in-progress runs in the same concurrency group.
+2. Deploy is skipped when health checks fail or are cancelled.
+
+If this happens again, cancel/force-cancel the stuck run in GitHub Actions and start one manual run to re-prime the schedule.
 
 ### Test mode
 

@@ -19,7 +19,7 @@ permissions:
 
 concurrency:
   group: healthcheck
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   PAGES_BRANCH: gh-pages
@@ -144,7 +144,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: check
-    if: always()
+    if: needs.check.result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
