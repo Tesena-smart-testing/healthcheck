@@ -33,12 +33,19 @@
     margin-top: 28px;
   }
   .generated { text-align: center; color: #777; margin-bottom: 24px; font-size: 0.9em; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
   .card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,.1);
-    margin: 0 auto 20px;
-    max-width: 1100px;
+    margin: 0;
+    max-width: none;
     padding: 20px 24px;
     border-left: 6px solid #ccc;
   }
@@ -52,6 +59,11 @@
   td { padding: 5px 10px; border-bottom: 1px solid #eee; }
   tr.ok  td { background: #f6fff8; }
   tr.error td { background: #fff8f8; }
+  @media (max-width: 900px) {
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body>
@@ -59,6 +71,8 @@
   <h1 class="title-text">Tesena Application Healthcheck Dashboard</h1>
 </div>
 <p class="generated">Generated: 2026-08-14 13:31 CEST &nbsp;|&nbsp; Data retention: 14 days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a></p>
+
+<div class="cards-grid">
 
 <div class="card ok">
   <h2>✅ Fake Presta Shop</h2>
@@ -266,6 +280,8 @@
       </tbody>
     </table>
   </details>
+</div>
+
 </div>
 
 <div class="logo-footer">
