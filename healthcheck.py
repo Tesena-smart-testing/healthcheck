@@ -462,12 +462,9 @@ def generate_html_report(all_results: list[dict]) -> None:
     margin: 0;
     padding: 20px;
   }}
-  h1 {{ text-align: center; color: #1a73e8; }}
+  h1 {{ text-align: center; color: #00558B; }}
   .title {{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    text-align: center;
     margin-bottom: 8px;
   }}
   .title-logo {{
@@ -477,7 +474,12 @@ def generate_html_report(all_results: list[dict]) -> None:
   }}
   .title-text {{
     margin: 0;
-    color: #1a73e8;
+    color: #00558B;
+  }}
+  .logo-footer {{
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
   }}
   .generated {{ text-align: center; color: #777; margin-bottom: 24px; font-size: 0.9em; }}
   .card {{
@@ -503,11 +505,13 @@ def generate_html_report(all_results: list[dict]) -> None:
 </head>
 <body>
 <div class="title">
-  <img src="{LOGO_URL}" alt="Tesena logo" class="title-logo"/>
-  <h1 class="title-text">Application Healthcheck Dashboard</h1>
+  <h1 class="title-text">Tesena Application Healthcheck Dashboard</h1>
 </div>
 <p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a></p>
 {cards_html}
+<div class="logo-footer">
+  <img src="{LOGO_URL}" alt="Tesena logo" class="title-logo"/>
+</div>
 </body>
 </html>"""
 
