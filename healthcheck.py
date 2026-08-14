@@ -29,7 +29,7 @@ DATA_DIR = REPO_ROOT / "docs" / "data"
 INDEX_HTML = REPO_ROOT / "docs" / "index.html"
 SUMMARY_HTML = REPO_ROOT / "docs" / "summary.html"
 RETENTION_DAYS = 14
-LOGO_URL = "https://qecompass.tesena.com/assets/logo-symbol-BBvPgfPc.png"
+LOGO_URL = "assets/tesena-logo.png"
 PRAGUE_TZ = ZoneInfo("Europe/Prague")
 
 

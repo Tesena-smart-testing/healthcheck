@@ -3,3 +3,7 @@ Fake Presta Shop;http://37.27.17.198:8084/cs/;200;6;//h2[contains(text(),"Oblíb
 CV Portal;https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")]
 Test Design Helper;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
 QE Compass;https://qecompass.tesena.com/;200;4;//title[contains(text(),"Tesena QE Compass")]
+Tesena Quiz;https://quiz.tesena.com/;200;5;//title[contains(text(),"Tesena kvíz")]
+Skills Matrix;https://skillsmatrix.tesena.com/;200;5;//title[contains(text(),"Tesena Skills Matrix")]
+Tesena Memo Game;https://memo.tesena.com/;200;5;//title[contains(text(),"Tesena Buddy")]
+Strom dovedností;https://skills.tesena.com/;200;5;//title[contains(text(),"Strom Dovedností")]
