@@ -471,8 +471,8 @@ def generate_html_report(all_results: list[dict]) -> None:
     margin-bottom: 8px;
   }}
   .title-logo {{
-    width: 72px;
-    height: 72px;
+    width: 216px;
+    height: 216px;
     object-fit: contain;
   }}
   .title-text {{
@@ -601,8 +601,8 @@ def generate_summary_html(results: list[dict]) -> None:
     gap: 10px;
   }}
   .title-logo {{
-    width: 72px;
-    height: 72px;
+    width: 216px;
+    height: 216px;
     object-fit: contain;
   }}
   .status-text {{
