@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-08-16T15:13:08.204218+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.646,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-08-16T15:13:08.852239+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.505,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-08-16T15:13:09.358412+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.52,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-08-16T15:13:09.879238+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.732,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-08-16T15:13:10.611928+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.581,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-08-16T15:13:11.194526+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.572,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-08-16T15:13:11.767077+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.513,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-08-16T15:13:12.282191+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.525,
+    "xpath_found": true,
+    "errors": []
+  }
+]
