@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-08-26T02:20:05.685633+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.65,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-08-26T02:20:06.336770+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.68,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-08-26T02:20:07.017715+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.558,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-08-26T02:20:07.576383+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.747,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-08-26T02:20:08.324079+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.503,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-08-26T02:20:08.828584+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.5,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-08-26T02:20:09.329120+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.778,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-08-26T02:20:10.108238+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.55,
+    "xpath_found": true,
+    "errors": []
+  }
+]
