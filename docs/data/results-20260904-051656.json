@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-09-04T05:16:37.555722+00:00",
+    "status": "error",
+    "http_status": null,
+    "response_time_s": null,
+    "xpath_found": null,
+    "errors": [
+      "Request timed out after 11.0s"
+    ]
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-09-04T05:16:48.569082+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.465,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-09-04T05:16:50.036198+00:00",
+    "status": "error",
+    "http_status": 502,
+    "response_time_s": 0.989,
+    "xpath_found": false,
+    "errors": [
+      "HTTP status 502 (expected 200)",
+      "XPath element not found: //title[contains(text(),\"Test Design Helper\")]"
+    ]
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-09-04T05:16:51.026685+00:00",
+    "status": "error",
+    "http_status": 502,
+    "response_time_s": 1.081,
+    "xpath_found": false,
+    "errors": [
+      "HTTP status 502 (expected 200)",
+      "XPath element not found: //title[contains(text(),\"Tesena QE Compass\")]"
+    ]
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-09-04T05:16:52.108755+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 1.583,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //title[contains(text(),\"Tesena kvíz\")]"
+    ]
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-09-04T05:16:53.692501+00:00",
+    "status": "error",
+    "http_status": 502,
+    "response_time_s": 0.928,
+    "xpath_found": false,
+    "errors": [
+      "HTTP status 502 (expected 200)",
+      "XPath element not found: //title[contains(text(),\"Tesena Skills Matrix\")]"
+    ]
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-09-04T05:16:54.621073+00:00",
+    "status": "error",
+    "http_status": 502,
+    "response_time_s": 0.807,
+    "xpath_found": false,
+    "errors": [
+      "HTTP status 502 (expected 200)",
+      "XPath element not found: //title[contains(text(),\"Tesena Buddy\")]"
+    ]
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-09-04T05:16:55.429495+00:00",
+    "status": "error",
+    "http_status": 502,
+    "response_time_s": 1.007,
+    "xpath_found": false,
+    "errors": [
+      "HTTP status 502 (expected 200)",
+      "XPath element not found: //title[contains(text(),\"Strom Dovedností\")]"
+    ]
+  }
+]
