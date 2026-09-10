@@ -1,0 +1,84 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-09-10T19:22:39.171358+00:00",
+    "status": "error",
+    "http_status": null,
+    "response_time_s": null,
+    "xpath_found": null,
+    "errors": [
+      "Request timed out after 11.0s"
+    ]
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-09-10T19:22:50.176751+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.473,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-09-10T19:22:51.650666+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.396,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-09-10T19:22:53.047487+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.65,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-09-10T19:22:54.698131+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.235,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-09-10T19:22:55.934398+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.29,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-09-10T19:22:57.225621+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.601,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-09-10T19:22:58.828085+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.29,
+    "xpath_found": true,
+    "errors": []
+  }
+]
