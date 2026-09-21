@@ -1,8 +1,8 @@
 [
   {
     "name": "Fake Presta Shop",
-    "url": "http://37.27.17.198:8084/cs/",
-    "timestamp": "2026-09-07T11:08:35.408829+00:00",
+    "url": "http://prestashop.tesena.com/cs/",
+    "timestamp": "2026-09-21T11:33:30.973272+00:00",
     "status": "error",
     "http_status": null,
     "response_time_s": null,
@@ -14,70 +14,70 @@
   {
     "name": "CV Portal",
     "url": "https://cv.tesena.com/",
-    "timestamp": "2026-09-07T11:08:46.420429+00:00",
+    "timestamp": "2026-09-21T11:33:42.383266+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.333,
+    "response_time_s": 0.909,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Test Design Helper",
     "url": "https://testdesign.tesena.com/",
-    "timestamp": "2026-09-07T11:08:47.754178+00:00",
+    "timestamp": "2026-09-21T11:33:43.293341+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.321,
+    "response_time_s": 1.38,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "QE Compass",
     "url": "https://qecompass.tesena.com/",
-    "timestamp": "2026-09-07T11:08:49.076567+00:00",
+    "timestamp": "2026-09-21T11:33:44.674265+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.792,
+    "response_time_s": 1.158,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Tesena Quiz",
     "url": "https://quiz.tesena.com/",
-    "timestamp": "2026-09-07T11:08:50.869845+00:00",
+    "timestamp": "2026-09-21T11:33:45.833259+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.277,
+    "response_time_s": 1.236,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Skills Matrix",
     "url": "https://skillsmatrix.tesena.com/",
-    "timestamp": "2026-09-07T11:08:52.147941+00:00",
+    "timestamp": "2026-09-21T11:33:47.069940+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.251,
+    "response_time_s": 1.109,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Tesena Memo Game",
     "url": "https://memo.tesena.com/",
-    "timestamp": "2026-09-07T11:08:53.399712+00:00",
+    "timestamp": "2026-09-21T11:33:48.179966+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 0.916,
+    "response_time_s": 0.943,
     "xpath_found": true,
     "errors": []
   },
   {
     "name": "Strom dovedností",
     "url": "https://skills.tesena.com/",
-    "timestamp": "2026-09-07T11:08:54.317076+00:00",
+    "timestamp": "2026-09-21T11:33:49.124346+00:00",
     "status": "ok",
     "http_status": 200,
-    "response_time_s": 1.407,
+    "response_time_s": 0.968,
     "xpath_found": true,
     "errors": []
   }
