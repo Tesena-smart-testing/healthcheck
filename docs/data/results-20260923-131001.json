@@ -1,0 +1,84 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://prestashop.tesena.com/cs/",
+    "timestamp": "2026-09-23T13:09:39.862307+00:00",
+    "status": "error",
+    "http_status": null,
+    "response_time_s": null,
+    "xpath_found": null,
+    "errors": [
+      "Request timed out after 11.0s"
+    ]
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-09-23T13:09:52.009526+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.612,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-09-23T13:09:53.621968+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.421,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-09-23T13:09:55.043756+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.142,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-09-23T13:09:56.186145+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.269,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-09-23T13:09:57.455677+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.718,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-09-23T13:09:59.173966+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 1.314,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-09-23T13:10:00.488111+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.869,
+    "xpath_found": true,
+    "errors": []
+  }
+]
