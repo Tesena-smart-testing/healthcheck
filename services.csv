@@ -1,5 +1,5 @@
 name;url;expected_status;max_response_seconds;xpath
-Fake Presta Shop;http://prestashop.tesena.com/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
+Fake Presta Shop;https://prestashop.tesena.com/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
 CV Portal;https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")]
 Test Design Helper;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
 QE Compass;https://qecompass.tesena.com/;200;4;//title[contains(text(),"Tesena QE Compass")]
