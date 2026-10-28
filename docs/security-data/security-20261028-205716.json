@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "target": "PHP 8.5.12",
+    "source_type": "library",
+    "status": "ok",
+    "summary": "No known CVEs found for this exact PHP version in the configured CVE feed.",
+    "recommendation": "No immediate action required.",
+    "details": {
+      "latest_in_cycle": "8.5.12",
+      "support_until": "2027-12-31",
+      "eol": "2029-12-31",
+      "cve_hits": [],
+      "cve_count": 0
+    },
+    "server": "testlab2",
+    "repository_url": null
+  },
+  {
+    "name": "CV Portal",
+    "target": "https://github.com/Tesena-smart-testing/CV-portal",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Estimated scan from package.json ranges found vulnerabilities: critical=0, high=0, medium=0, low=0, unknown=110.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with @babel/core. This is best-effort only because no lockfile was available.",
+    "details": {
+      "scan_mode": "estimated-from-package-json",
+      "package_count": 218,
+      "unresolved_dependency_count": 0,
+      "finding_count": 110,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 110
+      },
+      "top_findings": [
+        "@babel/core 7.26.7 -> 8.0.9 (unknown, GHSA-4x5r-pxfx-6jf8)",
+        "@nestjs/common 10.4.15 -> 12.3.2 (unknown, GHSA-cj7v-w2c7-cp7c)",
+        "@nestjs/core 10.4.15 -> 12.3.2 (unknown, GHSA-36xv-jgw5-4q75)",
+        "@tiptap/core 2.11.5 -> 3.32.1 (unknown, GHSA-cp6q-959q-f8rh)",
+        "axios 1.7.9 -> 1.21.0 (unknown, GHSA-35jp-ww65-95wh)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/CV-portal"
+  },
+  {
+    "name": "Test Design Helper",
+    "target": "https://github.com/Tesena-smart-testing/TDH_2.0",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Vulnerabilities detected: critical=0, high=0, medium=0, low=0, unknown=74.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with @babel/core.",
+    "details": {
+      "package_count": 807,
+      "finding_count": 74,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 74
+      },
+      "top_findings": [
+        "@babel/core 7.26.10 -> 8.0.9 (unknown, GHSA-4x5r-pxfx-6jf8)",
+        "axios 1.17.0 -> 1.21.0 (unknown, GHSA-3pq3-5fj3-cg6v)",
+        "axios 1.17.0 -> 1.21.0 (unknown, GHSA-42h9-826w-cgv3)",
+        "axios 1.17.0 -> 1.21.0 (unknown, GHSA-44g4-m2mj-wpvx)",
+        "axios 1.17.0 -> 1.21.0 (unknown, GHSA-4hqw-qxg8-jxx2)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/TDH_2.0"
+  },
+  {
+    "name": "QE Compass",
+    "target": "https://github.com/Tesena-smart-testing/qecompass",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Estimated scan from package.json ranges found vulnerabilities: critical=0, high=0, medium=0, low=0, unknown=16.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with @vitest/mocker. This is best-effort only because no lockfile was available.",
+    "details": {
+      "scan_mode": "estimated-from-package-json",
+      "package_count": 42,
+      "unresolved_dependency_count": 0,
+      "finding_count": 16,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 16
+      },
+      "top_findings": [
+        "@vitest/mocker 5.0.1 -> 5.0.5 (unknown, GHSA-qxg6-89mg-rqv8)",
+        "@vitest/mocker 5.0.1 -> 5.0.5 (unknown, GHSA-xp26-3454-mjgp)",
+        "@vitest/ui 5.0.1 -> 5.0.5 (unknown, GHSA-p458-7748-mcp3)",
+        "compression 1.8.1 -> 1.8.2 (unknown, GHSA-vc2v-76pw-4v95)",
+        "multer 2.1.1 -> 2.5.0 (unknown, GHSA-3p4h-7m6x-2hcm)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/qecompass"
+  },
+  {
+    "name": "Tesena Quiz",
+    "target": "https://github.com/Tesena-smart-testing/tesena-quiz",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Vulnerabilities detected: critical=0, high=0, medium=0, low=0, unknown=111.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with @babel/core.",
+    "details": {
+      "package_count": 775,
+      "finding_count": 111,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 111
+      },
+      "top_findings": [
+        "@babel/core 7.26.0 -> 8.0.9 (unknown, GHSA-4x5r-pxfx-6jf8)",
+        "@babel/helpers 7.26.0 -> 8.0.8 (unknown, GHSA-968p-4wvh-cqc8)",
+        "@babel/plugin-transform-modules-systemjs 7.25.9 -> 8.0.1 (unknown, GHSA-fv7c-fp4j-7gwp)",
+        "@babel/runtime 7.26.0 -> 8.0.8 (unknown, GHSA-968p-4wvh-cqc8)",
+        "@supabase/auth-js 2.67.3 -> 2.118.0 (unknown, GHSA-8r88-6cj9-9fh5)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/tesena-quiz"
+  },
+  {
+    "name": "Skills Matrix",
+    "target": "N/A",
+    "source_type": "none",
+    "status": "unknown",
+    "summary": "Neither library nor repository configured.",
+    "recommendation": "Fill library or repozitory in services.csv.",
+    "server": "testlab4",
+    "repository_url": null,
+    "details": {}
+  },
+  {
+    "name": "Tesena Memo Game",
+    "target": "https://github.com/Tesena-smart-testing/tesena-memo-game",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Vulnerabilities detected: critical=0, high=0, medium=0, low=0, unknown=74.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with @humanfs/node.",
+    "details": {
+      "package_count": 498,
+      "finding_count": 74,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 74
+      },
+      "top_findings": [
+        "@humanfs/node 0.16.7 -> 0.17.0 (unknown, GHSA-p498-v437-472g)",
+        "@remix-run/router 1.23.2 -> 1.23.4 (unknown, GHSA-2j2x-hqr9-3h42)",
+        "@tootallnate/once 2.0.0 -> 3.0.1 (unknown, GHSA-vpq2-c234-7xj6)",
+        "@vitest/mocker 3.2.4 -> 5.0.5 (unknown, GHSA-82fw-gwwq-j7x9)",
+        "@vitest/mocker 3.2.4 -> 5.0.5 (unknown, GHSA-qxg6-89mg-rqv8)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/tesena-memo-game"
+  },
+  {
+    "name": "Strom dovedností",
+    "target": "https://github.com/Tesena-smart-testing/skillTree",
+    "source_type": "repository",
+    "status": "warning",
+    "summary": "Vulnerabilities detected: critical=0, high=0, medium=0, low=0, unknown=64.",
+    "recommendation": "Based on OSV advisories and npm registry metadata, this looks like routine maintenance rather than an urgent incident. Plan dependency upgrades soon, starting with brace-expansion.",
+    "details": {
+      "package_count": 651,
+      "finding_count": 64,
+      "severity_counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 64
+      },
+      "top_findings": [
+        "brace-expansion 2.0.2 -> 5.0.12 (unknown, GHSA-3jxr-9vmj-r5cp)",
+        "brace-expansion 2.0.2 -> 5.0.12 (unknown, GHSA-6j4f-fj2g-mc7p)",
+        "brace-expansion 2.0.2 -> 5.0.12 (unknown, GHSA-f886-m6hf-6m8v)",
+        "brace-expansion 2.0.2 -> 5.0.12 (unknown, GHSA-mh99-v99m-4gvg)",
+        "brace-expansion 2.0.2 -> 5.0.12 (unknown, GHSA-q2hr-2g5m-vwhr)"
+      ]
+    },
+    "server": "testlab4",
+    "repository_url": "https://github.com/Tesena-smart-testing/skillTree"
+  }
+]
