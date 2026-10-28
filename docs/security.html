@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="refresh" content="3600"/>
+<title>Application Security Snapshot</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    padding: 24px;
+  }
+  h1 {
+    margin: 0 0 12px;
+    color: #00558B;
+  }
+  .meta {
+    color: #666;
+    margin-bottom: 16px;
+    font-size: 0.95em;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    background: #f8fafc;
+    border: 1px solid #e8edf5;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .stat b {
+    display: block;
+    font-size: 1.2em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92em;
+  }
+  thead {
+    background: #e8eaf6;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+  tr.ok td {
+    background: #f6fff8;
+  }
+  tr.warning td {
+    background: #fffbe6;
+  }
+  tr.error td {
+    background: #fff5f5;
+  }
+  tr.unknown td {
+    background: #f5f7fa;
+  }
+  code {
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 2px 5px;
+  }
+  .logo-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  .title-logo {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+  }
+  a {
+    color: #1a73e8;
+  }
+  @media (max-width: 900px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tesena Security Snapshot</h1>
+    <p class="meta">
+      Generated: 2026-10-28 22:04 CET &nbsp;|&nbsp;
+      Schedule: weekly (Sunday) &nbsp;|&nbsp;
+      Data retention: 35 days &nbsp;|&nbsp;
+      <a href="index.html">Open healthcheck dashboard</a>
+    </p>
+
+    <div class="stats">
+      <div class="stat"><b>1</b>OK</div>
+      <div class="stat"><b>6</b>Warnings</div>
+      <div class="stat"><b>0</b>Issues</div>
+      <div class="stat"><b>1</b>Unknown</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Service</th>
+          <th>Library / Repository</th>
+          <th>Finding</th>
+          <th>Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="ok"><td>✅ OK</td><td><strong>Fake Presta Shop <small>(server: testlab2)</small></strong></td><td><code>PHP 8.5.12</code></td><td>No known CVEs found for this exact PHP version in the configured CVE feed.</td><td>No immediate action required.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>CV Portal <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/CV-portal</code><div><a href="https://github.com/Tesena-smart-testing/CV-portal" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>Test Design Helper <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/TDH_2.0</code><div><a href="https://github.com/Tesena-smart-testing/TDH_2.0" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>QE Compass <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/qecompass</code><div><a href="https://github.com/Tesena-smart-testing/qecompass" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>Tesena Quiz <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/tesena-quiz</code><div><a href="https://github.com/Tesena-smart-testing/tesena-quiz" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+<tr class="unknown"><td>⚪ UNKNOWN</td><td><strong>Skills Matrix <small>(server: testlab4)</small></strong></td><td><code>N/A</code></td><td>Neither library nor repository configured.</td><td>Fill library or repozitory in services.csv.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>Tesena Memo Game <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/tesena-memo-game</code><div><a href="https://github.com/Tesena-smart-testing/tesena-memo-game" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+<tr class="warning"><td>🟡 WARNING</td><td><strong>Strom dovedností <small>(server: testlab4)</small></strong></td><td><code>https://github.com/Tesena-smart-testing/skillTree</code><div><a href="https://github.com/Tesena-smart-testing/skillTree" target="_blank" rel="noopener noreferrer">GitHub repository</a></div></td><td>No npm manifest found in repository root (or repository is not accessible).</td><td>Add package.json (if this is an npm project) or configure a different scanner.</td></tr>
+
+      </tbody>
+    </table>
+
+    <div class="logo-footer">
+      <img src="assets/tesena-logo.png" alt="Tesena logo" class="title-logo"/>
+    </div>
+  </div>
+</body>
+</html>

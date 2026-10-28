@@ -437,6 +437,16 @@ def _highest_severity(severity_counts: dict[str, int]) -> str:
     return "unknown"
 
 
+def _severity_status(severity_counts: dict[str, int]) -> str:
+    if (
+        severity_counts.get("critical", 0) > 0
+        or severity_counts.get("high", 0) > 0
+        or severity_counts.get("medium", 0) > 0
+    ):
+        return "warning"
+    return "ok"
+
+
 def _build_repo_recommendation(
     *,
     best_effort: bool,
@@ -548,7 +558,7 @@ def _check_php_library(service_name: str, library_value: str) -> dict[str, Any]:
     result["details"]["cve_hits"] = cve_hits[:10]
     result["details"]["cve_count"] = len(cve_hits)
     if cve_hits:
-        result["status"] = _max_status(result["status"], "error")
+        result["status"] = _max_status(result["status"], "warning")
         top_ids = ", ".join(hit["id"] for hit in cve_hits[:3])
         summary_parts.append(
             f"Known CVEs affecting this version were found ({len(cve_hits)} total; e.g. {top_ids})."
@@ -668,7 +678,7 @@ def _analyze_repo_dependencies(service_name: str, repo_url: str) -> dict[str, An
                             f"{item['package']} {item['version']} ({item['severity']}, {item['vuln_id']})"
                         )
 
-                base_result["status"] = "warning" if highest in {"critical", "high"} else "warning"
+                base_result["status"] = _severity_status(severity_counts)
                 base_result["summary"] = (
                     "Estimated scan from package.json ranges found vulnerabilities: "
                     f"critical={severity_counts['critical']}, high={severity_counts['high']}, "
@@ -683,7 +693,7 @@ def _analyze_repo_dependencies(service_name: str, repo_url: str) -> dict[str, An
                 )
                 return base_result
 
-            base_result["status"] = "warning"
+            base_result["status"] = _severity_status(severity_counts)
             base_result["summary"] = (
                 "Estimated scan from package.json ranges found no known vulnerabilities."
             )
@@ -741,7 +751,7 @@ def _analyze_repo_dependencies(service_name: str, repo_url: str) -> dict[str, An
             highest = severity
             break
 
-    base_result["status"] = "error" if highest in {"critical", "high"} else "warning"
+    base_result["status"] = _severity_status(severity_counts)
     base_result["summary"] = (
         "Vulnerabilities detected: "
         f"critical={severity_counts['critical']}, high={severity_counts['high']}, "
