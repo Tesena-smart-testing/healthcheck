@@ -149,6 +149,8 @@ File: `.github/workflows/securitycheck.yml`
   - `docs/security-data/security-<timestamp>.json`
 - For `library` values like `PHP 8.5.12`, it checks both support lifecycle and known CVEs from the CVE feed (`cve.circl.lu`).
 - In `security.html`, each service row shows the server in brackets and includes a GitHub repository link when `repozitory` is set (not `NONE`).
+- If a repository has `package.json` but no lockfile, the script runs a best-effort estimated dependency scan from version ranges and marks the result as warning-level due to lower precision.
+- The `Recommendation` column now contains a short 1-2 sentence English summary (severity-based triage) derived from OSV advisories and npm registry metadata.
 - Security result history retention is **35 days** (`RETENTION_DAYS = 35` in `securitycheck.py`).
 - Keeps security output separate from the hourly healthcheck pages.
 - Copies existing `docs/` content from `gh-pages` before generating new security output to avoid overwriting healthcheck pages.

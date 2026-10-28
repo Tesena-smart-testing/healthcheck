@@ -340,6 +340,39 @@ def _extract_npm_packages_from_lockfile(lock_data: dict[str, Any]) -> dict[str, 
     return packages
 
 
+def _estimate_version_from_range(range_value: str) -> str | None:
+    value = range_value.strip()
+    if not value:
+        return None
+    if value.startswith("workspace:"):
+        value = value.split("workspace:", 1)[1].strip()
+
+    match = re.search(r"(\d+)\.(\d+)\.(\d+)", value)
+    if match:
+        return f"{match.group(1)}.{match.group(2)}.{match.group(3)}"
+    return None
+
+
+def _extract_npm_packages_from_manifest(package_data: dict[str, Any]) -> tuple[dict[str, str], int]:
+    packages: dict[str, str] = {}
+    unresolved = 0
+
+    for section in ("dependencies", "devDependencies"):
+        dep_map = package_data.get(section)
+        if not isinstance(dep_map, dict):
+            continue
+        for name, version_range in dep_map.items():
+            pkg_name = str(name).strip()
+            if not pkg_name:
+                continue
+            estimated_version = _estimate_version_from_range(str(version_range))
+            if estimated_version:
+                packages[pkg_name] = estimated_version
+            else:
+                unresolved += 1
+    return packages, unresolved
+
+
 def _query_osv_for_npm(packages: dict[str, str]) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     package_items = sorted(packages.items())
@@ -395,6 +428,54 @@ def _get_latest_npm_version(package_name: str, cache: dict[str, str | None]) -> 
         latest = None
     cache[package_name] = latest
     return latest
+
+
+def _highest_severity(severity_counts: dict[str, int]) -> str:
+    for severity in ("critical", "high", "medium", "low", "unknown"):
+        if severity_counts.get(severity, 0) > 0:
+            return severity
+    return "unknown"
+
+
+def _build_repo_recommendation(
+    *,
+    best_effort: bool,
+    severity_counts: dict[str, int],
+    focus_package: str | None,
+    no_findings: bool = False,
+) -> str:
+    source_text = "Based on OSV advisories and npm registry metadata"
+    precision_note = " This is best-effort only because no lockfile was available." if best_effort else ""
+
+    if no_findings:
+        if best_effort:
+            return (
+                f"{source_text}, no known issues were detected in the estimated dependency set."
+                " Add package-lock.json for precise verification."
+            )
+        return f"{source_text}, no known issues were detected for the locked dependency versions. Keep routine updates."
+
+    highest = _highest_severity(severity_counts)
+    if highest in {"critical", "high"}:
+        if focus_package:
+            return (
+                f"{source_text}, this is not a trivial update and should be prioritized."
+                f" Upgrade vulnerable dependencies immediately, starting with {focus_package}.{precision_note}"
+            ).strip()
+        return (
+            f"{source_text}, this is not a trivial update and should be prioritized."
+            f" Upgrade vulnerable dependencies immediately.{precision_note}"
+        ).strip()
+
+    if focus_package:
+        return (
+            f"{source_text}, this looks like routine maintenance rather than an urgent incident."
+            f" Plan dependency upgrades soon, starting with {focus_package}.{precision_note}"
+        ).strip()
+    return (
+        f"{source_text}, this looks like routine maintenance rather than an urgent incident."
+        f" Plan dependency upgrades soon.{precision_note}"
+    ).strip()
 
 
 def _check_php_library(service_name: str, library_value: str) -> dict[str, Any]:
@@ -526,9 +607,92 @@ def _analyze_repo_dependencies(service_name: str, repo_url: str) -> dict[str, An
     if not lockfile_text:
         package_json = _fetch_raw_github_file(owner, repo, branches, "package.json")
         if package_json:
+            try:
+                package_data = json.loads(package_json)
+            except json.JSONDecodeError:
+                base_result["status"] = "warning"
+                base_result["summary"] = "package.json is present but invalid JSON."
+                base_result["recommendation"] = "Fix package.json format and rerun."
+                return base_result
+
+            estimated_packages, unresolved_count = _extract_npm_packages_from_manifest(package_data)
+            if not estimated_packages:
+                base_result["status"] = "warning"
+                base_result["summary"] = (
+                    "No lockfile found and package.json dependency versions cannot be estimated."
+                )
+                base_result["recommendation"] = (
+                    "Commit package-lock.json (or npm-shrinkwrap.json) for precise security scanning."
+                )
+                return base_result
+
+            findings = _query_osv_for_npm(estimated_packages)
+            severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "unknown": 0}
+            for finding in findings:
+                severity = finding["severity"]
+                if severity not in severity_counts:
+                    severity = "unknown"
+                severity_counts[severity] += 1
+
+            base_result["details"] = {
+                "scan_mode": "estimated-from-package-json",
+                "package_count": len(estimated_packages),
+                "unresolved_dependency_count": unresolved_count,
+                "finding_count": len(findings),
+                "severity_counts": severity_counts,
+            }
+
+            if findings:
+                highest = "low"
+                for severity in ("critical", "high", "medium", "low"):
+                    if severity_counts[severity] > 0:
+                        highest = severity
+                        break
+
+                latest_cache: dict[str, str | None] = {}
+                findings_sorted = sorted(
+                    findings,
+                    key=lambda x: SEVERITY_ORDER.get(x["severity"], 0),
+                    reverse=True,
+                )
+                top_findings = findings_sorted[:5]
+                recommendations: list[str] = []
+                for item in top_findings:
+                    latest = _get_latest_npm_version(item["package"], latest_cache)
+                    if latest:
+                        recommendations.append(
+                            f"{item['package']} {item['version']} -> {latest} ({item['severity']}, {item['vuln_id']})"
+                        )
+                    else:
+                        recommendations.append(
+                            f"{item['package']} {item['version']} ({item['severity']}, {item['vuln_id']})"
+                        )
+
+                base_result["status"] = "warning" if highest in {"critical", "high"} else "warning"
+                base_result["summary"] = (
+                    "Estimated scan from package.json ranges found vulnerabilities: "
+                    f"critical={severity_counts['critical']}, high={severity_counts['high']}, "
+                    f"medium={severity_counts['medium']}, low={severity_counts['low']}, unknown={severity_counts['unknown']}."
+                )
+                base_result["details"]["top_findings"] = recommendations
+                focus_package = top_findings[0]["package"] if top_findings else None
+                base_result["recommendation"] = _build_repo_recommendation(
+                    best_effort=True,
+                    severity_counts=severity_counts,
+                    focus_package=focus_package,
+                )
+                return base_result
+
             base_result["status"] = "warning"
-            base_result["summary"] = "No lockfile found; exact dependency versions cannot be fully verified."
-            base_result["recommendation"] = "Commit package-lock.json (or npm-shrinkwrap.json) for precise security scanning."
+            base_result["summary"] = (
+                "Estimated scan from package.json ranges found no known vulnerabilities."
+            )
+            base_result["recommendation"] = _build_repo_recommendation(
+                best_effort=True,
+                severity_counts=severity_counts,
+                focus_package=None,
+                no_findings=True,
+            )
             return base_result
         base_result["status"] = "warning"
         base_result["summary"] = "No npm manifest found in repository root (or repository is not accessible)."
@@ -603,10 +767,13 @@ def _analyze_repo_dependencies(service_name: str, repo_url: str) -> dict[str, An
                 f"{item['package']} {item['version']} ({item['severity']}, {item['vuln_id']})"
             )
 
-    if recommendations:
-        base_result["recommendation"] = "Prioritize upgrades: " + "; ".join(recommendations)
-    else:
-        base_result["recommendation"] = "Review vulnerabilities and update affected dependencies."
+    base_result["details"]["top_findings"] = recommendations
+    focus_package = top_findings[0]["package"] if top_findings else None
+    base_result["recommendation"] = _build_repo_recommendation(
+        best_effort=False,
+        severity_counts=severity_counts,
+        focus_package=focus_package,
+    )
     return base_result
 
 
