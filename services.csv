@@ -1,9 +1,9 @@
-name;url;expected_status;max_response_seconds;xpath
-Fake Presta Shop;https://prestashop.tesena.com/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")]
-CV Portal;https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")]
-Test Design Helper;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")]
-QE Compass;https://qecompass.tesena.com/;200;4;//title[contains(text(),"Tesena QE Compass")]
-Tesena Quiz;https://quiz.tesena.com/;200;5;//title[contains(text(),"Tesena kvíz")]
-Skills Matrix;https://skillsmatrix.tesena.com/;200;5;//title[contains(text(),"Tesena Skills Matrix")]
-Tesena Memo Game;https://memo.tesena.com/;200;5;//title[contains(text(),"Tesena Buddy")]
-Strom dovedností;https://skills.tesena.com/;200;5;//title[contains(text(),"Strom Dovedností")]
+name;url;expected_status;max_response_seconds;xpath;server;library;repozitory
+Fake Presta Shop;https://prestashop.tesena.com/cs/;200;6;//h2[contains(text(),"Oblíbené produkty")];testlab2;PHP 8.5.12;NONE
+CV Portal;https://cv.tesena.com/;200;4;//title[contains(text(),"CV Portal - Tesena")];testlab4;;https://github.com/Tesena-smart-testing/CV-portal
+Test Design Helper;https://testdesign.tesena.com/;200;4;//title[contains(text(),"Test Design Helper")];testlab4;;https://github.com/Tesena-smart-testing/TDH_2.0
+QE Compass;https://qecompass.tesena.com/;200;4;//title[contains(text(),"Tesena QE Compass")];testlab4;;https://github.com/Tesena-smart-testing/qecompass
+Tesena Quiz;https://quiz.tesena.com/;200;5;//title[contains(text(),"Tesena kvíz")];testlab4;;https://github.com/Tesena-smart-testing/tesena-quiz
+Skills Matrix;https://skillsmatrix.tesena.com/;200;5;//title[contains(text(),"Tesena Skills Matrix")];testlab4;;NONE
+Tesena Memo Game;https://memo.tesena.com/;200;5;//title[contains(text(),"Tesena Buddy")];testlab4;;https://github.com/Tesena-smart-testing/tesena-memo-game
+Strom dovedností;https://skills.tesena.com/;200;5;//title[contains(text(),"Strom Dovedností")];testlab4;;https://github.com/Tesena-smart-testing/skillTree

@@ -519,7 +519,7 @@ def generate_html_report(all_results: list[dict]) -> None:
 <div class="title">
   <h1 class="title-text">Tesena Application Healthcheck Dashboard</h1>
 </div>
-<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a></p>
+<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a> &nbsp;|&nbsp; <a href="security.html">Security snapshot</a></p>
 <div class="cards-grid">
 {cards_html}
 </div>

@@ -1,0 +1,165 @@
+name: Securitycheck
+
+on:
+  schedule:
+    # Run every Sunday at 03:00 UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: securitycheck
+  cancel-in-progress: true
+
+env:
+  PAGES_BRANCH: gh-pages
+
+jobs:
+  check:
+    name: Run security checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Checkout gh-pages for history
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.PAGES_BRANCH }}
+          path: gh-pages-data
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Copy previous docs into place
+        run: |
+          mkdir -p docs
+          if [ -d gh-pages-data/docs ]; then
+            cp -a gh-pages-data/docs/. docs/
+          fi
+
+      - name: Run securitycheck
+        id: run_security
+        run: python securitycheck.py
+        continue-on-error: true
+        env:
+          SECURITY_GITHUB_TOKEN: ${{ secrets.SECURITY_GITHUB_TOKEN }}
+
+      - name: Generate summary output
+        if: always()
+        continue-on-error: true
+        run: |
+          import json
+          import os
+          from pathlib import Path
+
+          data_dir = Path("docs/security-data")
+          result_files = sorted(data_dir.glob("security-*.json"), reverse=True)
+          if not result_files:
+              print("::error::No security results found")
+              raise SystemExit(1)
+
+          with open(result_files[0], "r", encoding="utf-8") as f:
+              results = json.load(f)
+
+          ok_count = sum(1 for r in results if r.get("status") == "ok")
+          warning_count = sum(1 for r in results if r.get("status") == "warning")
+          error_count = sum(1 for r in results if r.get("status") == "error")
+          unknown_count = sum(1 for r in results if r.get("status") == "unknown")
+
+          summary_text = "🛡️ **Securitycheck Summary**\n\n"
+          summary_text += f"✅ OK: **{ok_count}**\n"
+          summary_text += f"🟡 Warnings: **{warning_count}**\n"
+          summary_text += f"❌ Issues: **{error_count}**\n"
+          summary_text += f"⚪ Unknown: **{unknown_count}**\n\n"
+          summary_text += "**Report:** [security.html](https://tesena-smart-testing.github.io/healthcheck/security.html)\n"
+
+          with open(Path(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")), "a") as f:
+              f.write(summary_text)
+        shell: python
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/
+
+      - name: Commit and push results
+        if: always()
+        continue-on-error: true
+        run: |
+          cp -a docs /tmp/docs-output
+          git fetch origin ${PAGES_BRANCH} || true
+          git reset --hard
+          git clean -fd
+
+          if git show-ref --verify --quiet refs/remotes/origin/${PAGES_BRANCH}; then
+            git checkout -f -B ${PAGES_BRANCH} origin/${PAGES_BRANCH}
+          else
+            git checkout --orphan ${PAGES_BRANCH}
+            git rm -rf . || true
+          fi
+
+          rm -rf docs
+          cp -a /tmp/docs-output docs
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --staged --quiet || git commit -m "chore: update securitycheck results $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push origin ${PAGES_BRANCH}
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: check
+    if: needs.check.result == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url || steps.deployment_retry2.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: "600000"
+          error_count: "20"
+          reporting_interval: "10000"
+
+      - name: Retry deploy to GitHub Pages
+        if: steps.deployment.outcome == 'failure'
+        id: deployment_retry
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: "600000"
+          error_count: "20"
+          reporting_interval: "10000"
+
+      - name: Retry deploy to GitHub Pages (2nd retry)
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure'
+        id: deployment_retry2
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: "600000"
+          error_count: "20"
+          reporting_interval: "10000"
+
+      - name: Fail if deployment failed three times
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure' && steps.deployment_retry2.outcome == 'failure'
+        run: exit 1

@@ -7,10 +7,11 @@ Automated monitoring of web applications. Runs hourly via GitHub Actions, checks
 ## How it works
 
 1. **`services.csv`** defines the list of services to check.
-2. **`healthcheck.py`** performs the checks, saves JSON results to `docs/data/` and regenerates the HTML dashboard.
-3. **GitHub Actions** runs the check every hour, commits results to the `gh-pages` branch and deploys them to GitHub Pages.
-4. On failure, a **notification** is sent to MS Teams (Incoming Webhook recommended, SMTP optional fallback).
-5. A manual **test mode** can send a test message even when all services are healthy.
+2. **`healthcheck.py`** performs the availability checks, saves JSON results to `docs/data/` and regenerates the HTML dashboard.
+3. **`securitycheck.py`** performs weekly security snapshot checks and generates a separate report page.
+4. **GitHub Actions** runs health checks every hour and security checks weekly, commits results to the `gh-pages` branch and deploys them to GitHub Pages.
+5. On healthcheck failure, a **notification** is sent to MS Teams (Incoming Webhook recommended, SMTP optional fallback).
+6. A manual **test mode** can send a test message even when all services are healthy.
 
 ---
 
@@ -20,6 +21,7 @@ The dashboard is available at the URL shown in **Settings → Pages** of this re
 
 - **`/`** – full historical dashboard with per-service cards and history tables
 - **`/summary.html`** – concise summary: list of services and their current status (✅ / ❌)
+- **`/security.html`** – weekly security snapshot page (library/repository security findings)
 
 Pages source is set to **GitHub Actions** (Settings → Pages → Source: GitHub Actions).
 
@@ -30,8 +32,8 @@ Pages source is set to **GitHub Actions** (Settings → Pages → Source: GitHub
 Semicolon-separated file defining which services to check.
 
 ```csv
-url;expected_status;max_response_seconds;xpath
-https://example.com/;200;4;//title[contains(text(),"Example")]
+name;url;expected_status;max_response_seconds;xpath;server;library;repozitory
+Example App;https://example.com/;200;4;//title[contains(text(),"Example")];testlab4;;https://github.com/example/repo
 ```
 
 | Column | Description |
@@ -40,6 +42,9 @@ https://example.com/;200;4;//title[contains(text(),"Example")]
 | `expected_status` | Expected HTTP status code (usually `200`) |
 | `max_response_seconds` | Maximum allowed response time in seconds |
 | `xpath` | XPath expression that must match an element in the **server-rendered** HTML (leave empty to skip). **Note:** XPath does not work for JS-rendered content (SPA). Use `//title[...]` or `//meta[@name="description"]` for SPA apps. |
+| `server` | Target server label (informational metadata) |
+| `library` | Runtime/library version to check directly (example: `PHP 8.5.12`) |
+| `repozitory` | GitHub repository URL used for dependency security analysis when `library` is empty |
 
 ---
 
@@ -66,6 +71,12 @@ When `TEAMS_WEBHOOK_URL` is set, notifications are posted directly into the Team
 | `TEAMS_EMAIL` | Recipient e-mail address (e.g. MS Teams channel e-mail or any mailbox; optional if webhook is used) |
 
 SMTP is optional and can be used as a fallback channel if needed.
+
+### Optional security scan token
+
+| Secret | Description |
+|---|---|
+| `SECURITY_GITHUB_TOKEN` | Optional token with read access to scanned repositories (recommended for private repos). If not set, the script uses default `GITHUB_TOKEN` limits/access. |
 
 ### How to create a Teams Incoming Webhook
 
@@ -127,6 +138,20 @@ File: `.github/workflows/healthcheck.yml`
 - The `deploy` job has an automatic **retry** if GitHub Pages deployment fails transiently.
 - Workflow uses `concurrency` with `cancel-in-progress: true` to prevent long queue backlogs when an older run gets stuck.
 - The `deploy` job runs only when `check` succeeds (`if: needs.check.result == 'success'`) to avoid pending Pages deployments after failed/cancelled checks.
+
+### Security workflow
+
+File: `.github/workflows/securitycheck.yml`
+
+- Runs **weekly** on Sunday at 03:00 UTC (cron `0 3 * * 0`) and on manual trigger (`workflow_dispatch`).
+- Executes `securitycheck.py`, which reads `services.csv` and generates:
+  - `docs/security.html`
+  - `docs/security-data/security-<timestamp>.json`
+- For `library` values like `PHP 8.5.12`, it checks both support lifecycle and known CVEs from the CVE feed (`cve.circl.lu`).
+- In `security.html`, each service row shows the server in brackets and includes a GitHub repository link when `repozitory` is set (not `NONE`).
+- Security result history retention is **35 days** (`RETENTION_DAYS = 35` in `securitycheck.py`).
+- Keeps security output separate from the hourly healthcheck pages.
+- Copies existing `docs/` content from `gh-pages` before generating new security output to avoid overwriting healthcheck pages.
 
 ### Queue protection note
 
