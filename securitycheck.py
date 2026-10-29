@@ -27,6 +27,7 @@ SECURITY_HTML = REPO_ROOT / "docs" / "security.html"
 RETENTION_DAYS = 35
 LOGO_URL = "assets/tesena-logo.png"
 PRAGUE_TZ = ZoneInfo("Europe/Prague")
+SECURITY_DASHBOARD_URL = "https://tesena-smart-testing.github.io/healthcheck/security.html"
 
 SEVERITY_ORDER = {"critical": 4, "high": 3, "medium": 2, "low": 1, "unknown": 0}
 STATUS_CLASS = {"ok": "ok", "warning": "warning", "error": "error", "unknown": "unknown"}
@@ -269,12 +270,29 @@ def _extract_php_cve_hits(current_version: str, cycle: str) -> list[dict[str, An
                         ref_url = candidate
                         break
 
+        severity = "unknown"
+        metrics = cna.get("metrics") or []
+        if isinstance(metrics, list):
+            for metric in metrics:
+                if not isinstance(metric, dict):
+                    continue
+                for key in ("cvssV4_0", "cvssV3_1", "cvssV3_0", "cvssV2_0"):
+                    cvss_obj = metric.get(key)
+                    if not isinstance(cvss_obj, dict):
+                        continue
+                    severity = _severity_from_cvss(cvss_obj.get("baseScore"))
+                    if severity != "unknown":
+                        break
+                if severity != "unknown":
+                    break
+
         hits.append(
             {
                 "id": cve_id,
                 "summary": summary or "No description provided.",
                 "reference": ref_url,
                 "cycle": cycle,
+                "severity": severity,
             }
         )
     return hits
@@ -445,6 +463,188 @@ def _severity_status(severity_counts: dict[str, int]) -> str:
     ):
         return "warning"
     return "ok"
+
+
+def _has_elevated_vulnerabilities(severity_counts: dict[str, int]) -> bool:
+    return (
+        severity_counts.get("critical", 0) > 0
+        or severity_counts.get("high", 0) > 0
+        or severity_counts.get("medium", 0) > 0
+    )
+
+
+def _collect_security_alert_entries(results: list[dict[str, Any]]) -> list[dict[str, str]]:
+    alerts: list[dict[str, str]] = []
+
+    def _safe_count(value: Any) -> int:
+        try:
+            return int(value or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    for item in results:
+        details = item.get("details")
+        if not isinstance(details, dict):
+            continue
+
+        service_name = str(item.get("name") or "Unknown service")
+        server = str(item.get("server") or "").strip()
+        service_label = f"{service_name} (server: {server})" if server else service_name
+
+        source_type = str(item.get("source_type") or "").strip().lower()
+        if source_type == "repository":
+            raw_counts = details.get("severity_counts")
+            if not isinstance(raw_counts, dict):
+                continue
+
+            severity_counts = {
+                "critical": _safe_count(raw_counts.get("critical")),
+                "high": _safe_count(raw_counts.get("high")),
+                "medium": _safe_count(raw_counts.get("medium")),
+                "low": _safe_count(raw_counts.get("low")),
+                "unknown": _safe_count(raw_counts.get("unknown")),
+            }
+            if not _has_elevated_vulnerabilities(severity_counts):
+                continue
+
+            count_text = (
+                f"critical={severity_counts['critical']}, "
+                f"high={severity_counts['high']}, "
+                f"medium={severity_counts['medium']}, "
+                f"low={severity_counts['low']}, "
+                f"unknown={severity_counts['unknown']}"
+            )
+            top_findings = details.get("top_findings")
+            findings_text = ""
+            if isinstance(top_findings, list) and top_findings:
+                first_items = [str(x).strip() for x in top_findings if str(x).strip()][:3]
+                findings_text = "; ".join(first_items)
+
+            description = f"Repository vulnerabilities: {count_text}."
+            if findings_text:
+                description += f" Top findings: {findings_text}."
+            alerts.append(
+                {
+                    "service": service_label,
+                    "target": str(item.get("target") or "N/A"),
+                    "description": description,
+                }
+            )
+            continue
+
+        if source_type == "library":
+            cve_hits = details.get("cve_hits")
+            if not isinstance(cve_hits, list) or not cve_hits:
+                continue
+
+            severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "unknown": 0}
+            elevated_ids: list[str] = []
+            for hit in cve_hits:
+                if not isinstance(hit, dict):
+                    continue
+                severity = str(hit.get("severity") or "unknown").strip().lower()
+                if severity not in severity_counts:
+                    severity = "unknown"
+                severity_counts[severity] += 1
+                if severity in {"critical", "high", "medium"}:
+                    elevated_ids.append(str(hit.get("id") or "N/A"))
+
+            if not _has_elevated_vulnerabilities(severity_counts):
+                continue
+
+            cve_list = ", ".join(elevated_ids[:5]) if elevated_ids else "N/A"
+            description = (
+                "PHP CVEs found with elevated severity: "
+                f"critical={severity_counts['critical']}, "
+                f"high={severity_counts['high']}, "
+                f"medium={severity_counts['medium']}."
+                f" CVEs: {cve_list}."
+            )
+            alerts.append(
+                {
+                    "service": service_label,
+                    "target": str(item.get("target") or "N/A"),
+                    "description": description,
+                }
+            )
+
+    return alerts
+
+
+def send_teams_webhook_notification(results: list[dict[str, Any]]) -> None:
+    webhook_url = os.environ.get("TEAMS_WEBHOOK_URL", "").strip()
+    if not webhook_url:
+        print("WARN: TEAMS_WEBHOOK_URL not set - skipping Teams webhook notification.")
+        return
+
+    alert_entries = _collect_security_alert_entries(results)
+    if not alert_entries:
+        return
+
+    timestamp = _fmt_display(datetime.now(timezone.utc))
+    card_body: list[dict[str, Any]] = [
+        {
+            "type": "TextBlock",
+            "text": f"⚠️ Securitycheck ALERT — {len(alert_entries)} service(s) with critical/high/medium vulnerabilities",
+            "weight": "bolder",
+            "size": "large",
+            "color": "attention",
+            "wrap": True,
+        },
+        {
+            "type": "TextBlock",
+            "text": f"🕐 {timestamp}",
+            "isSubtle": True,
+            "spacing": "small",
+        },
+    ]
+
+    for entry in alert_entries:
+        card_body.append(
+            {
+                "type": "Container",
+                "spacing": "medium",
+                "items": [
+                    {
+                        "type": "TextBlock",
+                        "text": f"❌ **{entry['service']}**",
+                        "weight": "bolder",
+                        "wrap": True,
+                    },
+                    {
+                        "type": "FactSet",
+                        "facts": [
+                            {"name": "Target", "value": entry["target"]},
+                            {"name": "Finding", "value": entry["description"]},
+                        ],
+                        "spacing": "small",
+                    },
+                ],
+            }
+        )
+
+    card_body.append(
+        {
+            "type": "TextBlock",
+            "text": f"📊 [View full security report]({SECURITY_DASHBOARD_URL})",
+            "spacing": "medium",
+            "wrap": True,
+        }
+    )
+
+    payload = {
+        "type": "AdaptiveCard",
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "version": "1.4",
+        "body": card_body,
+    }
+
+    try:
+        response = requests.post(webhook_url, json=payload, timeout=10)
+        response.raise_for_status()
+        print("INFO: Teams webhook security notification sent")
+    except requests.RequestException as exc:
+        print(f"ERROR: Failed to send Teams webhook security notification: {exc}", file=sys.stderr)
 
 
 def _build_repo_recommendation(
@@ -1007,6 +1207,10 @@ def main() -> int:
         print(f"✗  services.csv not found at {SERVICES_CSV}", file=sys.stderr)
         return 1
 
+    has_webhook_notification = bool(os.environ.get("TEAMS_WEBHOOK_URL", "").strip())
+    if not has_webhook_notification:
+        print("WARN: TEAMS_WEBHOOK_URL not set - security alerts to Teams are disabled.")
+
     results: list[dict[str, Any]] = []
     repo_cache: dict[str, dict[str, Any]] = {}
 
@@ -1065,6 +1269,8 @@ def main() -> int:
     save_results(results)
     cleanup_old_results()
     generate_security_html(results)
+    if has_webhook_notification:
+        send_teams_webhook_notification(results)
 
     ok_count = sum(1 for r in results if r["status"] == "ok")
     warning_count = sum(1 for r in results if r["status"] == "warning")

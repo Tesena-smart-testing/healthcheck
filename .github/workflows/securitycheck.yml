@@ -58,6 +58,7 @@ jobs:
         continue-on-error: true
         env:
           SECURITY_GITHUB_TOKEN: ${{ secrets.SECURITY_GITHUB_TOKEN }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
       - name: Generate summary output
         if: always()

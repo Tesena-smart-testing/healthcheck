@@ -11,7 +11,8 @@ Automated monitoring of web applications. Runs hourly via GitHub Actions, checks
 3. **`securitycheck.py`** performs weekly security snapshot checks and generates a separate report page.
 4. **GitHub Actions** runs health checks every hour and security checks weekly, commits results to the `gh-pages` branch and deploys them to GitHub Pages.
 5. On healthcheck failure, a **notification** is sent to MS Teams (Incoming Webhook recommended, SMTP optional fallback).
-6. A manual **test mode** can send a test message even when all services are healthy.
+6. On weekly security checks, a Teams webhook alert is sent only when medium/high/critical vulnerabilities are found.
+7. A manual **test mode** can send a test message even when all services are healthy.
 
 ---
 
@@ -149,11 +150,12 @@ File: `.github/workflows/securitycheck.yml`
   - `docs/security-data/security-<timestamp>.json`
 - For `library` values like `PHP 8.5.12`, it checks both support lifecycle and known CVEs from the CVE feed (`cve.circl.lu`).
 - In `security.html`, each service row shows the server in brackets and includes a GitHub repository link when `repozitory` is set (not `NONE`).
-- If a repository has `package.json` but no lockfile, the script runs a best-effort estimated dependency scan from version ranges and marks the result as warning-level due to lower precision.
+- If a repository has `package.json` but no lockfile, the script runs a best-effort estimated dependency scan from version ranges and labels recommendation confidence accordingly.
 - The `Recommendation` column now contains a short 1-2 sentence English summary (severity-based triage) derived from OSV advisories and npm registry metadata.
 - Security result history retention is **35 days** (`RETENTION_DAYS = 35` in `securitycheck.py`).
 - Keeps security output separate from the hourly healthcheck pages.
 - Copies existing `docs/` content from `gh-pages` before generating new security output to avoid overwriting healthcheck pages.
+- If `TEAMS_WEBHOOK_URL` is configured, `securitycheck.py` sends a Teams alert only for services with medium/high/critical vulnerabilities (including affected PHP CVEs and npm dependency findings).
 
 ### Queue protection note
 
