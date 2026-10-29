@@ -5,6 +5,12 @@ on:
     # Run every Sunday at 03:00 UTC
     - cron: '0 3 * * 0'
   workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Send a test notification to the configured MS Teams channel'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -59,6 +65,7 @@ jobs:
         env:
           SECURITY_GITHUB_TOKEN: ${{ secrets.SECURITY_GITHUB_TOKEN }}
           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          SECURITYCHECK_TEST_MODE: ${{ inputs.test_mode }}
 
       - name: Generate summary output
         if: always()

@@ -52,6 +52,10 @@ def _fmt_display(dt: datetime) -> str:
     return dt.astimezone(PRAGUE_TZ).strftime("%Y-%m-%d %H:%M %Z")
 
 
+def is_truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _today() -> date:
     return datetime.now(timezone.utc).date()
 
@@ -571,24 +575,48 @@ def _collect_security_alert_entries(results: list[dict[str, Any]]) -> list[dict[
     return alerts
 
 
-def send_teams_webhook_notification(results: list[dict[str, Any]]) -> None:
+def send_teams_webhook_notification(results: list[dict[str, Any]], test_mode: bool = False) -> None:
     webhook_url = os.environ.get("TEAMS_WEBHOOK_URL", "").strip()
     if not webhook_url:
         print("WARN: TEAMS_WEBHOOK_URL not set - skipping Teams webhook notification.")
         return
 
     alert_entries = _collect_security_alert_entries(results)
-    if not alert_entries:
+    if not alert_entries and not test_mode:
         return
 
     timestamp = _fmt_display(datetime.now(timezone.utc))
+    listed_entries = alert_entries
+    if test_mode and not listed_entries:
+        listed_entries = []
+        for item in results[:5]:
+            service_name = str(item.get("name") or "Unknown service")
+            server = str(item.get("server") or "").strip()
+            service_label = f"{service_name} (server: {server})" if server else service_name
+            status = str(item.get("status") or "unknown").upper()
+            summary = str(item.get("summary") or "").strip() or "No summary."
+            listed_entries.append(
+                {
+                    "service": service_label,
+                    "target": str(item.get("target") or "N/A"),
+                    "description": f"Status={status}. {summary}",
+                }
+            )
+
+    header_text = (
+        "🔵 Securitycheck TEST"
+        if test_mode
+        else f"⚠️ Securitycheck ALERT — {len(alert_entries)} service(s) with critical/high/medium vulnerabilities"
+    )
+    header_color = "accent" if test_mode else "attention"
+
     card_body: list[dict[str, Any]] = [
         {
             "type": "TextBlock",
-            "text": f"⚠️ Securitycheck ALERT — {len(alert_entries)} service(s) with critical/high/medium vulnerabilities",
+            "text": header_text,
             "weight": "bolder",
             "size": "large",
-            "color": "attention",
+            "color": header_color,
             "wrap": True,
         },
         {
@@ -599,7 +627,17 @@ def send_teams_webhook_notification(results: list[dict[str, Any]]) -> None:
         },
     ]
 
-    for entry in alert_entries:
+    if test_mode and not alert_entries:
+        card_body.append(
+            {
+                "type": "TextBlock",
+                "text": "No medium/high/critical vulnerabilities found in this run. This is a test notification.",
+                "wrap": True,
+                "spacing": "small",
+            }
+        )
+
+    for entry in listed_entries:
         card_body.append(
             {
                 "type": "Container",
@@ -1207,9 +1245,12 @@ def main() -> int:
         print(f"✗  services.csv not found at {SERVICES_CSV}", file=sys.stderr)
         return 1
 
+    test_mode = is_truthy(os.environ.get("SECURITYCHECK_TEST_MODE"))
     has_webhook_notification = bool(os.environ.get("TEAMS_WEBHOOK_URL", "").strip())
     if not has_webhook_notification:
         print("WARN: TEAMS_WEBHOOK_URL not set - security alerts to Teams are disabled.")
+    if test_mode:
+        print("INFO: SECURITYCHECK_TEST_MODE enabled - a test Teams notification will be sent.")
 
     results: list[dict[str, Any]] = []
     repo_cache: dict[str, dict[str, Any]] = {}
@@ -1270,7 +1311,7 @@ def main() -> int:
     cleanup_old_results()
     generate_security_html(results)
     if has_webhook_notification:
-        send_teams_webhook_notification(results)
+        send_teams_webhook_notification(results, test_mode=test_mode)
 
     ok_count = sum(1 for r in results if r["status"] == "ok")
     warning_count = sum(1 for r in results if r["status"] == "warning")

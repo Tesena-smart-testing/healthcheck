@@ -145,6 +145,7 @@ File: `.github/workflows/healthcheck.yml`
 File: `.github/workflows/securitycheck.yml`
 
 - Runs **weekly** on Sunday at 03:00 UTC (cron `0 3 * * 0`) and on manual trigger (`workflow_dispatch`).
+- Manual trigger supports a **`test_mode`** input. When enabled, a test Teams webhook message is sent even when no elevated vulnerabilities are found.
 - Executes `securitycheck.py`, which reads `services.csv` and generates:
   - `docs/security.html`
   - `docs/security-data/security-<timestamp>.json`
@@ -186,6 +187,19 @@ Behavior:
 - If `TEAMS_WEBHOOK_URL` is configured, test message is posted to Teams channel.
 - If SMTP secrets are configured, test e-mail is also sent.
 
+Securitycheck test mode (Teams webhook):
+
+1. Open the **Securitycheck** workflow in GitHub Actions.
+2. Click **Run workflow**.
+3. Enable **`test_mode`**.
+4. Start the workflow.
+5. A message with heading **`Securitycheck TEST`** should arrive in the configured Teams channel.
+
+Behavior:
+
+- In normal mode, Securitycheck sends Teams notifications only for medium/high/critical vulnerabilities.
+- In test mode, it always sends a test Teams notification (if `TEAMS_WEBHOOK_URL` is configured), even when no elevated vulnerabilities are found.
+
 ### Workflow env variable
 
 | Variable | Default | Description |
@@ -213,11 +227,14 @@ export SMTP_USER=tomas.hak@tesena.com
 export SMTP_PASSWORD=your_app_password
 export TEAMS_EMAIL=recipient@yourdomain.com
 export HEALTHCHECK_TEST_MODE=1
+export SECURITYCHECK_TEST_MODE=1
 python healthcheck.py
+python securitycheck.py
 ```
 
 If `HEALTHCHECK_TEST_MODE=1` is set, the script sends a test notification even when all services are healthy.
 If `TEAMS_WEBHOOK_URL` is set, Teams notification is sent directly via webhook.
+If `SECURITYCHECK_TEST_MODE=1` is set, `securitycheck.py` sends a test Teams notification even when no elevated vulnerabilities are found.
 
 ---
 
