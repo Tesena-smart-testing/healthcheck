@@ -135,6 +135,7 @@ File: `.github/workflows/healthcheck.yml`
 - Runs **every hour** (cron `0 * * * *`) and on manual trigger (`workflow_dispatch`).
 - Manual trigger supports a **`test_mode`** input. When enabled, the workflow sends a test notification even if all services are healthy.
 - Results are committed to the `gh-pages` branch (only `docs/` folder).
+- Before generating new healthcheck output, the workflow copies existing `docs/` from `gh-pages` to avoid overwriting `security.html` with stale repository content.
 - Data older than **14 days** is automatically deleted (`RETENTION_DAYS = 14` in `healthcheck.py`).
 - The `deploy` job has an automatic **retry** if GitHub Pages deployment fails transiently.
 - Workflow uses `concurrency` with `cancel-in-progress: true` to prevent long queue backlogs when an older run gets stuck.

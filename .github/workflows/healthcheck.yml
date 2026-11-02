@@ -51,11 +51,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Copy previous results into place
+      - name: Copy previous docs into place
         run: |
-          mkdir -p docs/data
-          if [ -d gh-pages-data/docs/data ]; then
-            cp gh-pages-data/docs/data/* docs/data/ 2>/dev/null || true
+          mkdir -p docs
+          if [ -d gh-pages-data/docs ]; then
+            cp -a gh-pages-data/docs/. docs/
           fi
 
       - name: Run healthcheck
