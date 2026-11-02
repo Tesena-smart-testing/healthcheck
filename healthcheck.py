@@ -391,7 +391,9 @@ def generate_html_report(all_results: list[dict]) -> None:
     for url in services:
         services[url].sort(key=lambda x: x["timestamp"], reverse=True)
 
-    generated_at = _fmt_display(datetime.now(timezone.utc))
+    generated_at_dt = datetime.now(timezone.utc)
+    generated_at = _fmt_display(generated_at_dt)
+    security_snapshot_link = f"security.html?v={generated_at_dt.strftime('%Y%m%d%H%M%S')}"
 
     # --- build per-service cards ---
     cards_html = ""
@@ -519,7 +521,7 @@ def generate_html_report(all_results: list[dict]) -> None:
 <div class="title">
   <h1 class="title-text">Tesena Application Healthcheck Dashboard</h1>
 </div>
-<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a> &nbsp;|&nbsp; <a href="security.html">Security snapshot</a></p>
+<p class="generated">Generated: {generated_at} &nbsp;|&nbsp; Data retention: {RETENTION_DAYS} days &nbsp;|&nbsp; <a href="https://github.com/Tesena-smart-testing/healthcheck/actions/workflows/healthcheck.yml" target="_blank" rel="noopener noreferrer">Checks run every hour</a> &nbsp;|&nbsp; <a href="{security_snapshot_link}">Security snapshot</a></p>
 <div class="cards-grid">
 {cards_html}
 </div>

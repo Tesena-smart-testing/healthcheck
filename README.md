@@ -157,6 +157,7 @@ File: `.github/workflows/securitycheck.yml`
 - Keeps security output separate from the hourly healthcheck pages.
 - Copies existing `docs/` content from `gh-pages` before generating new security output to avoid overwriting healthcheck pages.
 - If `TEAMS_WEBHOOK_URL` is configured, `securitycheck.py` sends a Teams alert only for services with medium/high/critical vulnerabilities (including affected PHP CVEs and npm dependency findings).
+- The dashboard link to `security.html` includes a cache-busting query parameter to reduce stale page views caused by browser/CDN caching.
 
 ### Queue protection note
 
