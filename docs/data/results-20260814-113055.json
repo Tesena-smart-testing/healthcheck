@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Fake Presta Shop",
+    "url": "http://37.27.17.198:8084/cs/",
+    "timestamp": "2026-08-14T11:30:51.272733+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.454,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "CV Portal",
+    "url": "https://cv.tesena.com/",
+    "timestamp": "2026-08-14T11:30:51.755938+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.554,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Test Design Helper",
+    "url": "https://testdesign.tesena.com/",
+    "timestamp": "2026-08-14T11:30:52.311496+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.473,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "QE Compass",
+    "url": "https://qecompass.tesena.com/",
+    "timestamp": "2026-08-14T11:30:52.785960+00:00",
+    "status": "ok",
+    "http_status": 200,
+    "response_time_s": 0.444,
+    "xpath_found": true,
+    "errors": []
+  },
+  {
+    "name": "Tesena Quiz",
+    "url": "https://quiz.tesena.com/",
+    "timestamp": "2026-08-14T11:30:53.231488+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.458,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //h1[contains(normalize-space(),\"Výběr kvízových témat\")]"
+    ]
+  },
+  {
+    "name": "Skills Matrix",
+    "url": "https://skillsmatrix.tesena.com/",
+    "timestamp": "2026-08-14T11:30:53.704558+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.514,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //h1[contains(normalize-space(),\"SkillsMatrix Tesena\")]"
+    ]
+  },
+  {
+    "name": "Tesena Memo Game",
+    "url": "https://memo.tesena.com/",
+    "timestamp": "2026-08-14T11:30:54.263002+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.49,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //h3[contains(normalize-space(),\"Tesena Pexeso\")]"
+    ]
+  },
+  {
+    "name": "Strom dovedností",
+    "url": "https://skills.tesena.com/",
+    "timestamp": "2026-08-14T11:30:54.755767+00:00",
+    "status": "error",
+    "http_status": 200,
+    "response_time_s": 0.54,
+    "xpath_found": false,
+    "errors": [
+      "XPath element not found: //title[contains(text(),\"Tesena Strom dovedností\")]"
+    ]
+  }
+]
